@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaxe Academy – Uburezi Buzira Inenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --navy: #0a1628;
+        --gold: #c9973a;
+        --gold-light: #e8b95a;
+        --cream: #faf7f2;
+        --warm-white: #fff9f0;
+        --slate: #3a4a5c;
+        --muted: #8a9ab0;
+        --green: #1a6b4a;
+        --red: #b03a2e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--cream);
+        color: var(--navy);
+        overflow-x: hidden;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+        background: var(--navy);
+        color: var(--muted);
+        font-size: 0.78rem;
+        padding: 8px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        letter-spacing: 0.02em;
+    }
+    .topbar a { color: var(--muted); text-decoration: none; transition: color .2s; }
+    .topbar a:hover { color: var(--gold); }
+    .topbar-left { display: flex; gap: 24px; }
+    .topbar-right { display: flex; gap: 16px; }
+
+    .lang-btn {
+        background: none; border: 1px solid #2a3a50; color: var(--muted);
+        padding: 2px 10px; border-radius: 3px; cursor: pointer;
+        font-size: 0.75rem; font-family: 'DM Mono', monospace; transition: all .2s;
+    }
+    .lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── NAV ── */
+    nav {
+        background: white;
+        padding: 0 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e8e0d4;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 20px rgba(10,22,40,0.06);
+    }
+
+    .logo {
+        display: flex; align-items: center; gap: 14px;
+        padding: 14px 0; text-decoration: none;
+    }
+    .logo-icon img {
+    width: 00px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 80%;
+        border-radius: 80%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+
+    }
+    .logo-icon svg { width: 28px; height: 28px; fill: var(--gold); }
+    .logo-text { line-height: 1.1; }
+    .logo-text .name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.3rem; font-weight: 700;
+        color: var(--navy); display: block;
+    }
+    .logo-text .tagline {
+        font-size: 0.65rem; color: var(--gold);
+        text-transform: uppercase; letter-spacing: 0.12em;
+        font-family: 'DM Mono', monospace;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 0; }
+    .nav-links a, .dropdown > span {
+        display: block; padding: 22px 16px;
+        font-size: 0.82rem; font-weight: 500;
+        color: var(--slate); text-decoration: none;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: color .2s;
+        position: relative;
+    }
+    .nav-links a::after {
+        content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+        height: 2px; background: var(--gold); transform: scaleX(0);
+        transition: transform .25s;
+    }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a:hover, .dropdown:hover > span { color: var(--navy); }
+
+    .dropdown { position: relative; }
+    .dropdown-menu {
+        display: none; position: absolute; top: 100%; left: 0;
+        background: white; min-width: 220px;
+        border: 1px solid #e8e0d4; border-top: 2px solid var(--gold);
+        box-shadow: 0 8px 32px rgba(10,22,40,0.1);
+        z-index: 200;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a {
+        padding: 10px 20px; display: block;
+        font-size: 0.8rem; color: var(--slate);
+        border-bottom: 1px solid #f0ebe4;
+        transition: all .15s;
+    }
+    .dropdown-menu a:hover { background: #faf7f2; color: var(--gold); padding-left: 26px; }
+    .dropdown-menu a::after { display: none; }
+
+    .nav-cta {
+        background: var(--gold); color: white !important;
+        padding: 10px 22px !important; border-radius: 4px;
+        margin-left: 16px; font-weight: 600 !important;
+        letter-spacing: 0.04em;
+        transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--navy) !important; }
+    .nav-cta::after { display: none !important; }
+
+    /* ── HERO ── */
+    .hero {
+        position: relative; height: 90vh; min-height: 560px;
+        display: flex; align-items: center;
+        overflow: hidden;
+    }
+
+    .hero-slides { position: absolute; inset: 0; }
+    .hero-slide {
+        position: absolute; inset: 0; opacity: 0;
+        transition: opacity 1.2s ease;
+        background-size: cover; background-position: center;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(105deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.4) 60%, transparent 100%);
+    }
+
+    .slide1 { background: linear-gradient(135deg, #1a2a3a 0%, #0a1628 50%, #1a3a2a 100%); }
+    .slide2 { background: linear-gradient(135deg, #2a1a0a 0%, #1a0a28 50%, #0a1a3a 100%); }
+    .slide3 { background: linear-gradient(135deg, #0a2a1a 0%, #1a2a0a 50%, #2a0a1a 100%); }
+
+    /* Animated shapes on slides */
+    .slide-shape {
+        position: absolute; border-radius: 50%;
+        opacity: 0.06; animation: float 8s ease-in-out infinite;
+    }
+    .slide1 .slide-shape:nth-child(1) { width: 500px; height: 500px; background: var(--gold); right: 10%; top: -10%; animation-delay: 0s; }
+    .slide1 .slide-shape:nth-child(2) { width: 300px; height: 300px; background: #fff; right: 30%; bottom: -5%; animation-delay: -3s; }
+    .slide2 .slide-shape:nth-child(1) { width: 400px; height: 400px; background: var(--gold); right: 5%; top: 5%; animation-delay: -2s; }
+    .slide3 .slide-shape:nth-child(1) { width: 600px; height: 600px; background: var(--gold); right: -5%; top: -15%; animation-delay: -4s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-content {
+        position: relative; z-index: 2;
+        padding: 0 80px; max-width: 780px;
+        animation: heroIn 1s ease forwards;
+    }
+    @keyframes heroIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-label {
+        display: inline-block;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.72rem; letter-spacing: 0.2em;
+        color: var(--gold-light);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        padding: 6px 14px; border: 1px solid rgba(201,151,58,0.3);
+        border-radius: 2px;
+    }
+
+    .hero h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(2.8rem, 6vw, 5rem);
+        font-weight: 700; line-height: 1.08;
+        color: white; margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--gold-light); font-style: italic; }
+
+    .hero-sub {
+        font-size: 1.05rem; color: rgba(255,255,255,0.75);
+        max-width: 520px; line-height: 1.7; margin-bottom: 36px;
+        font-weight: 300;
+    }
+
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+        background: var(--gold); color: white;
+        padding: 14px 32px; border-radius: 4px;
+        text-decoration: none; font-weight: 600;
+        font-size: 0.88rem; letter-spacing: 0.04em;
+        transition: all .25s;
+        border: 2px solid var(--gold);
+    }
+    .btn-primary:hover { background: transparent; color: var(--gold-light); }
+    .btn-secondary {
+        background: transparent; color: white;
+        padding: 14px 32px; border-radius: 4px;
+        text-decoration: none; font-weight: 500;
+        font-size: 0.88rem; letter-spacing: 0.04em;
+        border: 2px solid rgba(255,255,255,0.35);
+        transition: all .25s;
+    }
+    .btn-secondary:hover { border-color: white; }
+
+    /* Slide dots */
+    .hero-dots {
+        position: absolute; bottom: 32px; left: 80px;
+        display: flex; gap: 10px; z-index: 3;
+    }
+    .dot {
+        width: 8px; height: 8px; border-radius: 4px;
+        background: rgba(255,255,255,0.35);
+        cursor: pointer; transition: all .3s;
+        border: none;
+    }
+    .dot.active { width: 28px; background: var(--gold); }
+
+    /* ── ONLINE SERVICES STRIP ── */
+    .services-strip {
+        background: var(--navy);
+        padding: 0 40px;
+        display: flex; justify-content: center;
+    }
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        max-width: 1100px; width: 100%;
+    }
+    .service-card {
+        padding: 28px 20px;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 10px;
+        text-decoration: none;
+        border-right: 1px solid rgba(255,255,255,0.07);
+        transition: background .2s;
+        cursor: pointer;
+    }
+    .service-card:last-child { border-right: none; }
+    .service-card:hover { background: rgba(201,151,58,0.08); }
+    .service-icon {
+        width: 44px; height: 44px;
+        background: rgba(201,151,58,0.12);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .2s;
+    }
+    .service-card:hover .service-icon { background: var(--gold); }
+    .service-icon svg { width: 22px; height: 22px; fill: var(--gold); transition: fill .2s; }
+    .service-card:hover .service-icon svg { fill: white; }
+    .service-label {
+        font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.65);
+        letter-spacing: 0.06em; text-transform: uppercase;
+        text-align: center;
+    }
+    .service-desc { font-size: 0.68rem; color: var(--muted); text-align: center; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 40px; }
+    .section-label {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--gold); margin-bottom: 12px;
+    }
+    h2.section-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700;
+        color: var(--navy); line-height: 1.1;
+        margin-bottom: 16px;
+    }
+    .section-desc {
+        font-size: 0.95rem; color: var(--slate);
+        max-width: 560px; line-height: 1.75;
+        margin-bottom: 48px;
+    }
+
+    /* ── STATS ── */
+    .stats-band {
+        background: var(--gold);
+        padding: 44px 40px;
+        display: flex; justify-content: center; gap: 0;
+    }
+    .stat-item {
+        flex: 1; max-width: 200px;
+        text-align: center;
+        border-right: 1px solid rgba(255,255,255,0.25);
+        padding: 0 40px;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3rem; font-weight: 700; color: white; line-height: 1;
+    }
+    .stat-lbl { font-size: 0.78rem; color: rgba(255,255,255,0.8); margin-top: 6px; letter-spacing: 0.05em; }
+
+    /* ── ABOUT ── */
+    .about-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 80px; align-items: center;
+        max-width: 1100px; margin: 0 auto;
+    }
+    .about-img-wrap { position: relative; }
+    .about-img {
+        width: 100%; aspect-ratio: 4/3;
+        background: linear-gradient(135deg, #1a2a3a 0%, #0a3a2a 100%);
+        border-radius: 8px; overflow: hidden;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .about-img-inner {
+        display: flex; flex-direction: column; align-items: center; gap: 16px;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.85rem; letter-spacing: 0.05em;
+    }
+    .about-img-inner svg { width: 64px; height: 64px; fill: rgba(201,151,58,0.3); }
+    .about-badge {
+        position: absolute; bottom: -20px; right: -20px;
+        background: var(--gold); color: white;
+        width: 120px; height: 120px; border-radius: 50%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-family: 'Cormorant Garamond', serif;
+    }
+    .about-badge .yr { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .about-badge .yrlab { font-size: 0.65rem; letter-spacing: 0.1em; }
+
+    .about-features { display: flex; flex-direction: column; gap: 20px; margin-top: 32px; }
+    .about-feat {
+        display: flex; gap: 16px; align-items: flex-start;
+        padding: 16px; background: white; border-radius: 6px;
+        border-left: 3px solid var(--gold);
+    }
+    .feat-icon { width: 36px; height: 36px; flex-shrink: 0; }
+    .feat-icon svg { width: 36px; height: 36px; fill: var(--gold); }
+    .feat-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+    .feat-text p { font-size: 0.8rem; color: var(--slate); line-height: 1.5; }
+
+    /* ── COURSES ── */
+    .courses-section { background: var(--warm-white); }
+    .courses-grid {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .course-card {
+        background: white; border-radius: 8px; overflow: hidden;
+        box-shadow: 0 2px 16px rgba(10,22,40,0.06);
+        transition: transform .25s, box-shadow .25s;
+        text-decoration: none; color: inherit;
+    }
+    .course-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(10,22,40,0.12); }
+    .course-img {
+        height: 160px; position: relative; overflow: hidden;
+    }
+    .course-img-bg {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .course-img-bg svg { width: 56px; height: 56px; opacity: 0.25; fill: white; }
+    .c1 .course-img-bg { background: linear-gradient(135deg, #1a4a6a, #0a2a3a); }
+    .c2 .course-img-bg { background: linear-gradient(135deg, #1a6a3a, #0a3a1a); }
+    .c3 .course-img-bg { background: linear-gradient(135deg, #6a3a1a, #3a1a0a); }
+    .c4 .course-img-bg { background: linear-gradient(135deg, #4a1a6a, #2a0a3a); }
+    .course-badge {
+        position: absolute; top: 12px; left: 12px;
+        background: var(--gold); color: white;
+        font-size: 0.65rem; padding: 4px 10px; border-radius: 2px;
+        font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+    }
+    .course-body { padding: 20px; }
+    .course-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 8px; }
+    .course-body p { font-size: 0.8rem; color: var(--slate); line-height: 1.6; }
+    .course-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        margin-top: 14px; font-size: 0.78rem; font-weight: 600;
+        color: var(--gold); letter-spacing: 0.04em;
+    }
+
+    /* ── SCHOOL MANAGEMENT SYSTEM ── */
+    .sms-section { background: var(--navy); color: white; }
+    .sms-section .section-label { color: var(--gold-light); }
+    .sms-section h2.section-title { color: white; }
+    .sms-section .section-desc { color: rgba(255,255,255,0.6); max-width: 580px; }
+
+    .sms-portals {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .portal-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 10px; padding: 32px;
+        transition: all .25s; cursor: pointer;
+    }
+    .portal-card:hover {
+        background: rgba(201,151,58,0.08);
+        border-color: rgba(201,151,58,0.3);
+        transform: translateY(-4px);
+    }
+    .portal-icon {
+        width: 56px; height: 56px;
+        background: rgba(201,151,58,0.1);
+        border-radius: 50%; margin-bottom: 20px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .portal-icon svg { width: 28px; height: 28px; fill: var(--gold); }
+    .portal-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: white; margin-bottom: 10px; }
+    .portal-card p { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.65; margin-bottom: 20px; }
+    .portal-features { list-style: none; margin-bottom: 24px; }
+    .portal-features li {
+        font-size: 0.78rem; color: rgba(255,255,255,0.6);
+        padding: 5px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .portal-features li::before { content: '✓'; color: var(--gold); font-weight: 700; }
+    .portal-btn {
+        display: block; text-align: center;
+        padding: 11px; border-radius: 5px;
+        font-size: 0.82rem; font-weight: 600;
+        letter-spacing: 0.04em; text-decoration: none;
+        background: var(--gold); color: white;
+        transition: background .2s;
+        border: none; cursor: pointer; width: 100%;
+    }
+    .portal-btn:hover { background: var(--gold-light); }
+
+    /* Login Modal */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(10,22,40,0.85); z-index: 1000;
+        align-items: center; justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+        background: white; border-radius: 12px; overflow: hidden;
+        width: 440px; max-width: 95vw;
+        animation: modalIn .3s ease;
+    }
+    @keyframes modalIn {
+        from { opacity: 0; transform: translateY(24px) scale(0.97); }
+        to { opacity: 1; transform: none; }
+    }
+    .modal-header {
+        background: var(--navy); padding: 28px 32px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: white; }
+    .modal-close { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.4rem; }
+    .modal-close:hover { color: white; }
+    .modal-body { padding: 32px; }
+    .modal-role {
+        display: flex; gap: 8px; margin-bottom: 24px;
+    }
+    .role-tab {
+        flex: 1; padding: 9px; border: 1px solid #e0d8cc; border-radius: 5px;
+        background: none; cursor: pointer; font-size: 0.8rem; font-weight: 500;
+        color: var(--slate); transition: all .2s;
+    }
+    .role-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--slate); margin-bottom: 6px; letter-spacing: 0.03em; }
+    .form-group input {
+        width: 100%; padding: 11px 14px;
+        border: 1px solid #e0d8cc; border-radius: 5px;
+        font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
+        transition: border-color .2s; outline: none;
+    }
+    .form-group input:focus { border-color: var(--gold); }
+    .modal-submit {
+        width: 100%; padding: 13px; background: var(--gold); color: white;
+        border: none; border-radius: 5px; font-size: 0.9rem; font-weight: 600;
+        cursor: pointer; letter-spacing: 0.04em; transition: background .2s;
+    }
+    .modal-submit:hover { background: var(--navy); }
+    .modal-links { margin-top: 14px; text-align: center; font-size: 0.78rem; color: var(--muted); }
+    .modal-links a { color: var(--gold); text-decoration: none; }
+
+    /* ── ACADEMICS ── */
+    .academics-section { background: var(--cream); }
+    .academics-grid {
+        display: grid; grid-template-columns: 2fr 1fr;
+        gap: 48px; max-width: 1100px; margin: 0 auto;
+    }
+    .calendar-card {
+        background: white; border-radius: 10px; overflow: hidden;
+        box-shadow: 0 2px 20px rgba(10,22,40,0.07);
+    }
+    .cal-header {
+        background: var(--navy); color: white;
+        padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .cal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-day-hdr {
+        text-align: center; padding: 10px 4px;
+        font-size: 0.65rem; font-family: 'DM Mono', monospace;
+        color: var(--muted); letter-spacing: 0.08em;
+        background: #f8f4ee; border-bottom: 1px solid #ede8e0;
+    }
+    .cal-day {
+        text-align: center; padding: 10px 4px;
+        font-size: 0.82rem; color: var(--slate);
+        border-bottom: 1px solid #f0ebe4;
+        cursor: pointer; transition: background .15s;
+        position: relative;
+    }
+    .cal-day:hover { background: #faf7f2; }
+    .cal-day.other { color: #ccc; }
+    .cal-day.today {
+        background: var(--gold); color: white; font-weight: 700; border-radius: 0;
+    }
+    .cal-day.event::after {
+        content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+        width: 4px; height: 4px; background: var(--gold); border-radius: 50%;
+    }
+    .cal-day.today.event::after { background: white; }
+
+    .upcoming-list { display: flex; flex-direction: column; gap: 0; padding: 16px 0; }
+    .event-item {
+        display: flex; gap: 16px; padding: 14px 24px;
+        border-bottom: 1px solid #f0ebe4;
+        transition: background .15s;
+    }
+    .event-item:hover { background: #faf7f2; }
+    .event-date-box {
+        flex-shrink: 0; width: 44px; text-align: center;
+        background: var(--cream); border-radius: 6px; padding: 6px;
+    }
+    .event-date-box .day { font-size: 1.2rem; font-weight: 700; color: var(--navy); line-height: 1; }
+    .event-date-box .mon { font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em; font-family: 'DM Mono', monospace; }
+    .event-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+    .event-info p { font-size: 0.75rem; color: var(--muted); }
+
+    .sidebar-card {
+        background: white; border-radius: 10px; padding: 24px;
+        box-shadow: 0 2px 20px rgba(10,22,40,0.07);
+        margin-bottom: 24px;
+    }
+    .sidebar-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; margin-bottom: 16px; color: var(--navy); }
+    .doc-link {
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px; border-radius: 5px; text-decoration: none;
+        color: var(--slate); font-size: 0.82rem;
+        border: 1px solid #f0ebe4; margin-bottom: 8px;
+        transition: all .15s;
+    }
+    .doc-link:hover { border-color: var(--gold); color: var(--navy); }
+    .doc-link svg { width: 18px; height: 18px; fill: var(--gold); flex-shrink: 0; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-section { background: var(--warm-white); }
+    .testi-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .testi-card {
+        background: white; border-radius: 10px; padding: 30px;
+        box-shadow: 0 2px 16px rgba(10,22,40,0.06);
+        border-top: 3px solid var(--gold);
+    }
+    .testi-quote {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3rem; color: var(--gold); line-height: 0.5; margin-bottom: 16px;
+    }
+    .testi-text {
+        font-size: 0.88rem; color: var(--slate); line-height: 1.75;
+        font-style: italic; margin-bottom: 20px;
+    }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+        width: 44px; height: 44px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--navy), var(--slate));
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 700; font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .testi-meta .name { font-weight: 600; font-size: 0.88rem; }
+    .testi-meta .role { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── CONTACT ── */
+    .contact-section { background: var(--navy); color: white; }
+    .contact-grid {
+        display: grid; grid-template-columns: 1fr 1.4fr;
+        gap: 64px; max-width: 1100px; margin: 0 auto;
+        align-items: start;
+    }
+    .contact-section .section-label { color: var(--gold-light); }
+    .contact-section h2.section-title { color: white; }
+    .contact-item {
+        display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start;
+    }
+    .contact-icon {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(201,151,58,0.1);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .contact-icon svg { width: 18px; height: 18px; fill: var(--gold); }
+    .contact-item .label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+    .contact-item .value { font-size: 0.9rem; color: white; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .contact-form input, .contact-form select, .contact-form textarea {
+        width: 100%; padding: 12px 16px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 5px; color: white; font-size: 0.88rem;
+        font-family: 'DM Sans', sans-serif; outline: none;
+        transition: border-color .2s;
+    }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(255,255,255,0.3); }
+    .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--gold); }
+    .contact-form select { color: rgba(255,255,255,0.6); }
+    .contact-form select option { background: var(--navy); }
+    .contact-form textarea { resize: vertical; min-height: 120px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ── FOOTER ── */
+    footer {
+        background: #060e1c; color: rgba(255,255,255,0.5);
+        padding: 48px 40px 28px;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+        gap: 48px; max-width: 1100px; margin: 0 auto 40px;
+    }
+    .footer-brand .logo-text .name { color: white; font-size: 1.1rem; }
+    .footer-brand p { font-size: 0.82rem; line-height: 1.7; margin-top: 14px; margin-bottom: 20px; }
+    .social-links { display: flex; gap: 10px; }
+    .social-link {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; transition: all .2s;
+    }
+    .social-link:hover { background: var(--gold); border-color: var(--gold); }
+    .social-link svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.6); }
+    .social-link:hover svg { fill: white; }
+
+    .footer-col h4 { color: white; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col a { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.45); text-decoration: none; margin-bottom: 10px; transition: color .15s; }
+    .footer-col a:hover { color: var(--gold); }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.06);
+        padding-top: 24px; max-width: 1100px; margin: 0 auto;
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.75rem;
+    }
+
+    /* ── UTILITY ── */
+    .center { text-align: center; }
+    .center .section-desc { margin-left: auto; margin-right: auto; }
+
+    @media (max-width: 900px) {
+        .about-grid, .academics-grid, .contact-grid { grid-template-columns: 1fr; }
+        .courses-grid { grid-template-columns: repeat(2, 1fr); }
+        .services-grid { grid-template-columns: repeat(3, 1fr); }
+        .hero-content { padding: 0 40px; }
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+        .testi-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+        .courses-grid { grid-template-columns: 1fr; }
+        .hero-content { padding: 0 24px; }
+        section { padding: 60px 24px; }
+        .nav-links { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="#">☎ (+250) 789-407-385</a>
+        <a href="#">✉ info@excelacademy.rw</a>
+        <a href="#">📧 Staff Email</a>
+    </div>
+    <div class="topbar-right">
+        <button class="lang-btn">EN</button>
+        <button class="lang-btn">FR</button>
+        <button class="lang-btn">SW</button>
+    </div>
+</div>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="logo">
+        <div class="logo-icon">
+        <div class="logo-icon">
+        <img src="images/Jaxe logo.png" alt="Jaxe Academy Logo">
+    </div>
+        </div>
+        <div class="logo-text">
+            <span class="name">Jaxe Academy</span>
+            <span class="tagline">Uburezi Buzira Inenge</span>
+        </div>
+    </a>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <div class="dropdown">
+            <span>About Us ▾</span>
+            <div class="dropdown-menu">
+                <a href="#">Welcome Messages</a>
+                <a href="#">Mission & Vision</a>
+                <a href="#">Goals & Core Values</a>
+                <a href="#">Key Documents</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <span>Academics ▾</span>
+            <div class="dropdown-menu">
+                <a href="#">Nursery Section</a>
+                <a href="#">Primary Section</a>
+                <a href="#">Secondary Section</a>
+               
+                <a href="#">Academic Calendar</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <span>Online Services ▾</span>
+            <div class="dropdown-menu">
+                <a href="#" onclick="openModal('student')">E-learning Portal</a>
+                <a href="#" onclick="openModal('student')">Student MIS</a>
+                <a href="#" onclick="openModal('parent')">Parent Portal</a>
+                <a href="#" onclick="openModal('teacher')">Staff Portal</a>
+                <a href="#">Digital Library</a>
+            </div>
+        </div>
+        <a href="#">Events</a>
+        <a href="#">Contact</a>
+        <a href="#" class="nav-cta" onclick="openModal('student'); return false;">Apply Now</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-slides">
+        <div class="hero-slide slide1 active">
+            <div class="slide-shape"></div><div class="slide-shape"></div>
+        </div>
+        <div class="hero-slide slide2">
+            <div class="slide-shape"></div>
+        </div>
+        <div class="hero-slide slide3">
+            <div class="slide-shape"></div>
+        </div>
+    </div>
+    <div class="hero-content">
+        <span class="hero-label">Admission Open 2026</span>
+        <h1>Where Learning<br>Knows <em>No Bounds</em></h1>
+        <p class="hero-sub">Our dedicated educators are committed to providing an exceptional educational experience that inspires every learner to reach their full potential.</p>
+        <div class="hero-btns">
+            <a href="#" class="btn-primary" onclick="openModal('student'); return false;">Apply Now</a>
+            <a href="#sms" class="btn-secondary">Access Portal →</a>
+        </div>
+    </div>
+    <div class="hero-dots">
+        <button class="dot active" onclick="goSlide(0)"></button>
+        <button class="dot" onclick="goSlide(1)"></button>
+        <button class="dot" onclick="goSlide(2)"></button>
+    </div>
+</div>
+
+<!-- SERVICES STRIP -->
+<div class="services-strip">
+    <div class="services-grid">
+        <a class="service-card" href="#" onclick="openModal('student'); return false;">
+            <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <div class="service-label">E-Learning</div>
+            <div class="service-desc">Online courses & resources</div>
+        </a>
+        <a class="service-card" href="#sms">
+            <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM9 9h6M9 12h6M9 15h4"/></svg></div>
+            <div class="service-label">MIS Portal</div>
+            <div class="service-desc">School management system</div>
+        </a>
+        <a class="service-card" href="#" onclick="openModal('parent'); return false;">
+            <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg></div>
+            <div class="service-label">Parent Portal</div>
+            <div class="service-desc">Track your child's progress</div>
+        </a>
+        <a class="service-card" href="#">
+            <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg></div>
+            <div class="service-label">Library</div>
+            <div class="service-desc">Digital library access</div>
+        </a>
+        <a class="service-card" href="#" onclick="openModal('student'); return false;">
+            <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.38 2 2 0 0 1 3.55 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.5A16 16 0 0 0 14.09 16"/></svg></div>
+            <div class="service-label">Apply Online</div>
+            <div class="service-desc">Start your application</div>
+        </a>
+    </div>
+</div>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+    <div class="stat-item"><div class="stat-num">1,000+</div><div class="stat-lbl">Students Enrolled</div></div>
+    <div class="stat-item"><div class="stat-num">100+</div><div class="stat-lbl">Qualified Teachers</div></div>
+    <div class="stat-item"><div class="stat-num">94%</div><div class="stat-lbl">Pass Rate</div></div>
+    <div class="stat-item"><div class="stat-num">2</div><div class="stat-lbl">Campus Locations</div></div>
+    <div class="stat-item"><div class="stat-num">7+</div><div class="stat-lbl">Years of Excellence</div></div>
+</div>
+
+<!-- ABOUT -->
+<section>
+    <div class="about-grid">
+        <div class="about-img-wrap">
+            <div class="about-img">
+                <div class="about-img-inner">
+                    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <span>School Campus</span>
+                </div>
+            </div>
+            <div class="about-badge">
+                <span class="yr">15+</span>
+                <span class="yrlab">Years</span>
+            </div>
+        </div>
+        <div>
+            <div class="section-label">About Our School</div>
+            <h2 class="section-title">Nurturing Excellence Since 2010</h2>
+            <p class="section-desc">We are committed to building a community of learners who are academically excellent, morally upright, and globally competitive. Our two campuses in Kigali serve learners from Nursery to Secondary level.</p>
+            <div class="about-features">
+                <div class="about-feat">
+                    <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                    <div class="feat-text"><h4>World-Class Curriculum</h4><p>We offer the Rwanda Competency-Based Curriculum and Cambridge International education.</p></div>
+                </div>
+                <div class="about-feat">
+                    <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                    <div class="feat-text"><h4>Expert Teaching Staff</h4><p>Our teachers are certified professionals committed to student-centered learning approaches.</p></div>
+                </div>
+                <div class="about-feat">
+                    <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg></div>
+                    <div class="feat-text"><h4>Holistic Development</h4><p>We develop the whole child — intellectual, social, emotional, physical, and spiritual.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses-section">
+    <div class="center">
+        <div class="section-label">Academic Programs</div>
+        <h2 class="section-title">Our Sections</h2>
+        <p class="section-desc">From early childhood to advanced secondary education, we offer comprehensive programs tailored to every stage of learning.</p>
+    </div>
+    <div class="courses-grid">
+        <a href="#" class="course-card c1">
+            <div class="course-img">
+                <div class="course-img-bg"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zM4 20s-1-5 8-5 8 5 8 5"/></svg></div>
+                <span class="course-badge">Ages 3–5</span>
+            </div>
+            <div class="course-body">
+                <h3>Nursery Section</h3>
+                <p>Play-based early childhood education building a strong foundation for lifelong learning through exploration and creativity.</p>
+                <span class="course-link">Learn More →</span>
+            </div>
+        </a>
+        <a href="#" class="course-card c2">
+            <div class="course-img">
+                <div class="course-img-bg"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                <span class="course-badge">Stages 1–6</span>
+            </div>
+            <div class="course-body">
+                <h3>Primary Section</h3>
+                <p>Developing core literacy, numeracy, and critical thinking skills through Rwanda CBC and enriched learning activities.</p>
+                <span class="course-link">Learn More →</span>
+            </div>
+        </a>
+        <a href="#" class="course-card c3">
+            <div class="course-img">
+                <div class="course-img-bg"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+                <span class="course-badge">Stages 7–13</span>
+            </div>
+            <div class="course-body">
+                <h3>Secondary Section</h3>
+                <p>Preparing students for national examinations and higher education through rigorous academic and co-curricular programs.</p>
+                <span class="course-link">Learn More →</span>
+            </div>
+        </a>
+        <a href="#" class="course-card c4">
+            <div class="course-img">
+                <div class="course-img-bg"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                <span class="course-badge">IGCSE & A-Level</span>
+            </div>
+            <div class="course-body">
+                <h3>Cambridge Curriculum</h3>
+                <p>International qualifications recognized globally, opening doors to leading universities around the world.</p>
+                <span class="course-link">Learn More →</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- SCHOOL MANAGEMENT SYSTEM -->
+<section class="sms-section" id="sms">
+    <div class="center">
+        <div class="section-label">Online Services</div>
+        <h2 class="section-title">School Management System</h2>
+        <p class="section-desc">Access our integrated digital platform — manage academic records, view results, pay fees, and communicate with teachers, all in one place.</p>
+    </div>
+    <div class="sms-portals">
+        <div class="portal-card">
+            <div class="portal-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </div>
+            <h3>Student Portal</h3>
+            <p>Access your academic records, class schedule, assignments, exam results, and learning materials.</p>
+            <ul class="portal-features">
+                <li>View exam results & transcripts</li>
+                <li>Submit assignments online</li>
+                <li>Access e-learning content</li>
+                <li>Class timetable & attendance</li>
+                <li>Fee balance & payment history</li>
+            </ul>
+            <button class="portal-btn" onclick="openModal('student')">Student Login</button>
+        </div>
+        <div class="portal-card">
+            <div class="portal-icon">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </div>
+            <h3>Parent Portal</h3>
+            <p>Stay connected with your child's academic journey, track performance, and communicate with teachers.</p>
+            <ul class="portal-features">
+                <li>Real-time grade monitoring</li>
+                <li>Attendance notifications</li>
+                <li>Fee payment & receipts</li>
+                <li>Message teachers & staff</li>
+                <li>Event & activity updates</li>
+            </ul>
+            <button class="portal-btn" onclick="openModal('parent')">Parent Login</button>
+        </div>
+        <div class="portal-card">
+            <div class="portal-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5M6 12v5c3 3 9 3 12 0v-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Staff Portal</h3>
+            <p>Manage classes, record grades, track attendance, and access administrative tools efficiently.</p>
+            <ul class="portal-features">
+                <li>Grade & mark entry system</li>
+                <li>Attendance management</li>
+                <li>Lesson plan repository</li>
+                <li>Staff communication hub</li>
+                <li>Report card generation</li>
+            </ul>
+            <button class="portal-btn" onclick="openModal('teacher')">Staff Login</button>
+        </div>
+    </div>
+</section>
+
+<!-- ACADEMICS / CALENDAR -->
+<section class="academics-section" id="academics">
+    <div class="section-label">Academic Life</div>
+    <h2 class="section-title">Academic Calendar & Events</h2>
+    <div class="academics-grid">
+        <div class="calendar-card">
+            <div class="cal-header">
+                <h3>May 2026</h3>
+                <span style="font-size:0.75rem; color:rgba(255,255,255,0.5); font-family:'DM Mono',monospace;">Term 3</span>
+            </div>
+            <div class="cal-grid">
+                <div class="cal-day-hdr">SUN</div><div class="cal-day-hdr">MON</div><div class="cal-day-hdr">TUE</div>
+                <div class="cal-day-hdr">WED</div><div class="cal-day-hdr">THU</div><div class="cal-day-hdr">FRI</div>
+                <div class="cal-day-hdr">SAT</div>
+                <!-- Row 1 -->
+                <div class="cal-day other">27</div><div class="cal-day other">28</div><div class="cal-day other">29</div>
+                <div class="cal-day other">30</div><div class="cal-day">1</div><div class="cal-day event">2</div>
+                <div class="cal-day">3</div>
+                <!-- Row 2 -->
+                <div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day today event">6</div>
+                <div class="cal-day">7</div><div class="cal-day event">8</div><div class="cal-day">9</div>
+                <div class="cal-day">10</div>
+                <!-- Row 3 -->
+                <div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+                <div class="cal-day event">14</div><div class="cal-day">15</div><div class="cal-day">16</div>
+                <div class="cal-day event">17</div>
+                <!-- Row 4 -->
+                <div class="cal-day">18</div><div class="cal-day event">19</div><div class="cal-day">20</div>
+                <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div>
+                <div class="cal-day">24</div>
+                <!-- Row 5 -->
+                <div class="cal-day event">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+                <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+                <div class="cal-day">31</div>
+            </div>
+            <div class="upcoming-list">
+                <div class="event-item">
+                    <div class="event-date-box"><div class="day">8</div><div class="mon">MAY</div></div>
+                    <div class="event-info"><h4>Science Fair Exhibition</h4><p>Kacyiru Campus · 9:00am – 4:00pm</p></div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date-box"><div class="day">14</div><div class="mon">MAY</div></div>
+                    <div class="event-info"><h4>Parent-Teacher Meeting</h4><p>Both Campuses · 8:00am – 12:00pm</p></div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date-box"><div class="day">17</div><div class="mon">MAY</div></div>
+                    <div class="event-info"><h4>Culture Day Celebration</h4><p>Kicukiro Campus · All day</p></div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date-box"><div class="day">25</div><div class="mon">MAY</div></div>
+                    <div class="event-info"><h4>Sports Day</h4><p>Kacyiru Campus · 8:00am – 5:00pm</p></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="sidebar-card">
+                <h3>📄 Key Documents</h3>
+                <a class="doc-link" href="#">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                    Academic Calendar 2026
+                </a>
+                <a class="doc-link" href="#">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                    School Prospectus
+                </a>
+                <a class="doc-link" href="#">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                    Admission Requirements
+                </a>
+                <a class="doc-link" href="#">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                    Fee Structure 2026
+                </a>
+            </div>
+            <div class="sidebar-card">
+                <h3>📊 Quick Statistics</h3>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px;"><span>National Exam Pass Rate</span><span style="color:var(--green);font-weight:700;">98%</span></div>
+                        <div style="height:6px;background:#f0ebe4;border-radius:3px;"><div style="height:100%;width:98%;background:var(--green);border-radius:3px;"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px;"><span>University Placement</span><span style="color:var(--gold);font-weight:700;">94%</span></div>
+                        <div style="height:6px;background:#f0ebe4;border-radius:3px;"><div style="height:100%;width:94%;background:var(--gold);border-radius:3px;"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px;"><span>Student Satisfaction</span><span style="color:var(--navy);font-weight:700;">97%</span></div>
+                        <div style="height:6px;background:#f0ebe4;border-radius:3px;"><div style="height:100%;width:97%;background:var(--navy);border-radius:3px;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+    <div class="center">
+        <div class="section-label">What People Say</div>
+        <h2 class="section-title">Voices from Our Community</h2>
+        <p class="section-desc">Stories and experiences from students, parents, and alumni who have been part of the Excel Academy family.</p>
+    </div>
+    <div class="testi-grid">
+        <div class="testi-card">
+            <div class="testi-quote">"</div>
+            <p class="testi-text">My daughter has been here for three years and the transformation has been remarkable. The teachers genuinely care about every learner's success. I couldn't be more grateful.</p>
+            <div class="testi-author">
+                <div class="testi-avatar">A</div>
+                <div class="testi-meta"><div class="name">Amina Uwase</div><div class="role">Parent · Nursery & Primary</div></div>
+            </div>
+        </div>
+        <div class="testi-card">
+            <div class="testi-quote">"</div>
+            <p class="testi-text">The Cambridge program prepared me exceptionally well for university. I gained entry to my first choice institution and felt more prepared than students from other schools.</p>
+            <div class="testi-author">
+                <div class="testi-avatar">J</div>
+                <div class="testi-meta"><div class="name">Jean-Pierre Nkurunziza</div><div class="role">Graduate · Class of 2024</div></div>
+            </div>
+        </div>
+        <div class="testi-card">
+            <div class="testi-quote">"</div>
+            <p class="testi-text">The online parent portal keeps me connected even when I travel for work. I can see my son's attendance, grades, and even message his teachers directly. Very modern system.</p>
+            <div class="testi-author">
+                <div class="testi-avatar">E</div>
+                <div class="testi-meta"><div class="name">Emmanuel Habimana</div><div class="role">Parent · Secondary Section</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+    <div class="contact-grid">
+        <div>
+            <div class="section-label">Get In Touch</div>
+            <h2 class="section-title">Contact Us</h2>
+            <p style="color:rgba(255,255,255,0.55);font-size:0.9rem;line-height:1.75;margin-bottom:32px;">We're happy to answer any questions about admissions, academics, or our online services. Reach us on any of the channels below.</p>
+            <div class="contact-item">
+                <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                <div><div class="label">Address</div><div class="value">Kigali City, Gasabo District,<br>Kimironko Sector, Rwanda</div></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.38 2 2 0 0 1 3.55 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.5A16 16 0 0 0 14.09 16"/></svg></div>
+                <div><div class="label">Phone</div><div class="value">(+250) 788-591-503<br>(+250) 785-446-090</div></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <div><div class="label">Email</div><div class="value">info@excelacademy.rw<br>admissions@excelacademy.rw</div></div>
+            </div>
+        </div>
+        <form class="contact-form" onsubmit="return false;">
+            <div class="form-row">
+                <input type="text" placeholder="Full Name">
+                <input type="email" placeholder="Email Address">
+            </div>
+            <input type="tel" placeholder="Phone Number">
+            <select>
+                <option value="" disabled selected>Enquiry Type</option>
+                <option>Admission Enquiry</option>
+                <option>Academic Information</option>
+                <option>Fee Structure</option>
+                <option>Online Portal Support</option>
+                <option>General Information</option>
+            </select>
+            <textarea placeholder="Your message..."></textarea>
+            <button type="submit" class="btn-primary" style="border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Send Message</button>
+        </form>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="logo">
+                <div class="logo-icon"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:var(--gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                <div class="logo-text"><span class="name" style="color:white;">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+            </div>
+            <p>Shaping the leaders of tomorrow through quality education, strong values, and a commitment to excellence across our two campuses in Kigali, Rwanda.</p>
+            <div class="social-links">
+                <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+                <a class="social-link" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <a href="#">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Academic Programs</a>
+            <a href="#">Events & News</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+            <h4>Online Portals</h4>
+            <a href="#" onclick="openModal('student'); return false;">Student Login</a>
+            <a href="#" onclick="openModal('parent'); return false;">Parent Login</a>
+            <a href="#" onclick="openModal('teacher'); return false;">Staff Login</a>
+            <a href="#">E-Learning</a>
+            <a href="#">Digital Library</a>
+        </div>
+        <div class="footer-col">
+            <h4>Admissions</h4>
+            <a href="#" onclick="openModal('student'); return false;">Apply Online</a>
+            <a href="#">Admission Requirements</a>
+            <a href="#">Fee Structure</a>
+            <a href="#">Scholarships</a>
+            <a href="#">Open Days</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Excel Academy. All rights reserved.</span>
+        <span>Designed by <a href="#" style="color:var(--gold);text-decoration:none;">Your Tech Team</a></span>
+    </div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Student Portal</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-role">
+                <button class="role-tab active" onclick="switchRole('student', this)">Student</button>
+                <button class="role-tab" onclick="switchRole('parent', this)">Parent</button>
+                <button class="role-tab" onclick="switchRole('teacher', this)">Staff</button>
+            </div>
+            <div class="form-group">
+                <label id="idLabel">Student ID / Registration No.</label>
+                <input type="text" placeholder="e.g. STU-2026-001">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="Enter your password">
+            </div>
+            <button class="modal-submit">Sign In to Portal →</button>
+            <div class="modal-links">
+                <a href="#">Forgot password?</a> &nbsp;|&nbsp;
+                <a href="#">Need help?</a> &nbsp;|&nbsp;
+                <a href="#" onclick="closeModal(); openModal('student'); return false;">Apply for admission</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // HERO SLIDER
+    let current = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function goSlide(n) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = n;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+    }
+
+    setInterval(() => goSlide((current + 1) % slides.length), 5000);
+
+    // MODAL
+    const roles = {
+        student: { title: 'Student Portal', label: 'Student ID / Registration No.' },
+        parent:  { title: 'Parent Portal',  label: 'Parent ID / Phone Number' },
+        teacher: { title: 'Staff Portal',   label: 'Staff ID / Employee No.' },
+    };
+
+    function openModal(role) {
+        document.getElementById('loginModal').classList.add('open');
+        setRole(role);
+        // highlight correct tab
+        document.querySelectorAll('.role-tab').forEach((t, i) => {
+            t.classList.toggle('active', ['student','parent','teacher'][i] === role);
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('loginModal').classList.remove('open');
+    }
+
+    function setRole(role) {
+        document.getElementById('modalTitle').textContent = roles[role].title;
+        document.getElementById('idLabel').textContent = roles[role].label;
+    }
+
+    function switchRole(role, btn) {
+        setRole(role);
+        document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+const res = await fetch('http://localhost/phpmyadmin/index.php?route=/database/structure&db=school_db', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ user_code, password })
+});
+const data = await res.json();
+if (data.success) {
+  localStorage.setItem('token', data.token);
+  // redirect to portal
+}
+</body>
+</html>
