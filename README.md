@@ -10,7 +10,6 @@ school-backend/
 ├── server.js                  ← Entry point
 ├── package.json
 ├── .env.example               ← Copy to .env and fill in values
-├── database.sql               ← Run this first to set up MySQL
 ├── config/
 │   └── db.js                  ← MySQL connection pool
 ├── middleware/
@@ -21,8 +20,12 @@ school-backend/
 │   ├── gradeController.js     ← Grades, report cards, ranking
 │   ├── feeController.js       ← Fee types, payments, statements
 │   └── attendanceController.js← Mark & view attendance
-└── routes/
-    └── index.js               ← All API routes
+├── routes/
+│   └── index.js               ← All API routes
+├── database/
+│   └── database.sql           ← MySQL schema & seed data
+└── public/                    ← Frontend HTML files
+    └── (HTML files here)
 ```
 
 ---
@@ -46,11 +49,11 @@ cp .env.example .env          # Mac/Linux
 ### 3. Set up the database
 Open **MySQL Workbench** (or MySQL shell) and run:
 ```sql
-source path/to/database.sql
+source path/to/database/database.sql
 ```
 Or via terminal:
 ```bash
-mysql -u root -p < database.sql
+mysql -u root -p < database/database.sql
 ```
 
 ### 4. Start the server
@@ -177,7 +180,7 @@ POST /api/fees/payments
 ### ATTENDANCE
 
 | Method | Endpoint                                    | Access          |
-|--------|---------------------------------------------|-----------------|
+|--------|---------------------------------------------|------------- -----|
 | POST   | /api/attendance                             | Teacher, Admin  |
 | POST   | /api/attendance/bulk                        | Teacher, Admin  |
 | GET    | /api/attendance/class/:classId?date=        | Teacher, Admin  |
@@ -223,7 +226,7 @@ password:  Admin@123
 
 ## 🚀 Connecting to the Frontend (HTML Website)
 
-In your `school-website.html`, update the login form to call:
+In your `public/index.html`, update the login form to call:
 ```javascript
 const res = await fetch('http://localhost:5000/api/auth/login', {
   method: 'POST',
