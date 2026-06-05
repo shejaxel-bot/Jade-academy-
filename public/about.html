@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — Jaxe Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --navy: #0a1628; --gold: #c9973a; --gold-light: #e8b95a;
+        --cream: #faf7f2; --warm-white: #fff9f0; --slate: #3a4a5c;
+        --muted: #8a9ab0; --green: #1a6b4a; --red: #b03a2e;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--navy); overflow-x:hidden; }
+    nav { background:white; padding:0 40px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e8e0d4; position:sticky; top:0; z-index:100; }
+    .logo { display:flex; align-items:center; gap:14px; padding:14px 0; text-decoration:none; }
+    .logo-text .name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--navy); display:block; }
+    .page-hero { background:var(--navy); padding:80px 40px 60px; color:white; }
+    .page-hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,5vw,4rem); font-weight:700; margin-bottom:16px; }
+    .page-hero p { font-size:1rem; color:rgba(255,255,255,0.6); max-width:560px; line-height:1.75; }
+    section { padding:80px 40px; }
+    .center { text-align:center; }
+    footer { background:#060e1c; color:rgba(255,255,255,0.5); padding:48px 40px 28px; text-align:center; }
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="logo">
+        <div class="logo-text"><span class="name">Jaxe Academy</span></div>
+    </a>
+</nav>
+
+<div class="page-hero">
+    <h1>About <em style="color:var(--gold-light);">Jaxe Academy</em></h1>
+    <p>Learn about our mission, vision, and the values that guide everything we do.</p>
+</div>
+
+<section class="center">
+    <h2>Our Mission</h2>
+    <p>To provide holistic, quality education that empowers every learner to realize their full potential.</p>
+    <h2 style="margin-top:60px;">Our Vision</h2>
+    <p>To be the leading center of academic excellence in East Africa.</p>
+</section>
+
+<footer>
+    <p>&copy; 2026 Jaxe Academy. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
