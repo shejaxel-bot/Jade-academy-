@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals & Core Values — Excel Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--gold:#c9973a;--gold-light:#e8b95a;--cream:#faf7f2;--warm-white:#fff9f0;--slate:#3a4a5c;--muted:#8a9ab0;--green:#1a6b4a;--red:#b03a2e;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);overflow-x:hidden;}
+.topbar{background:var(--navy);color:var(--muted);font-size:.78rem;padding:8px 40px;display:flex;justify-content:space-between;align-items:center;}
+.topbar a{color:var(--muted);text-decoration:none;transition:color .2s;}.topbar a:hover{color:var(--gold);}
+.topbar-left{display:flex;gap:24px;}.topbar-right{display:flex;gap:16px;}
+.lang-btn{background:none;border:1px solid #2a3a50;color:var(--muted);padding:2px 10px;border-radius:3px;cursor:pointer;font-size:.75rem;font-family:'DM Mono',monospace;transition:all .2s;}
+.lang-btn:hover{border-color:var(--gold);color:var(--gold);}
+nav{background:white;padding:0 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8e0d4;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(10,22,40,.06);}
+.logo{display:flex;align-items:center;gap:14px;padding:14px 0;text-decoration:none;}
+.logo-icon{width:48px;height:48px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-icon svg{width:28px;height:28px;fill:var(--gold);}
+.logo-text .name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--navy);display:block;}
+.logo-text .tagline{font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-family:'DM Mono',monospace;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-links a,.dropdown>span{display:block;padding:22px 16px;font-size:.82rem;font-weight:500;color:var(--slate);text-decoration:none;letter-spacing:.02em;cursor:pointer;transition:color .2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .25s;}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-links a:hover,.dropdown:hover>span{color:var(--navy);}
+.dropdown{position:relative;}
+.dropdown-menu{display:none;position:absolute;top:100%;left:0;background:white;min-width:220px;border:1px solid #e8e0d4;border-top:2px solid var(--gold);box-shadow:0 8px 32px rgba(10,22,40,.1);z-index:200;}
+.dropdown:hover .dropdown-menu{display:block;}
+.dropdown-menu a{padding:10px 20px;display:block;font-size:.8rem;color:var(--slate);border-bottom:1px solid #f0ebe4;transition:all .15s;}
+.dropdown-menu a:hover{background:#faf7f2;color:var(--gold);padding-left:26px;}.dropdown-menu a::after{display:none;}
+.nav-cta{background:var(--gold);color:white!important;padding:10px 22px!important;border-radius:4px;margin-left:16px;font-weight:600!important;letter-spacing:.04em;transition:background .2s!important;}
+.nav-cta:hover{background:var(--navy)!important;}.nav-cta::after{display:none!important;}
+.page-hero{background:var(--navy);padding:80px 40px 60px;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:rgba(201,151,58,.06);}
+.page-hero::after{content:'';position:absolute;left:-50px;bottom:-80px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.03);}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:20px;position:relative;z-index:1;}
+.breadcrumb a{color:var(--gold);text-decoration:none;}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;color:white;line-height:1.1;margin-bottom:16px;position:relative;z-index:1;}
+.page-hero h1 em{color:var(--gold-light);font-style:italic;}
+.page-hero p{font-size:1rem;color:rgba(255,255,255,.6);max-width:560px;line-height:1.75;position:relative;z-index:1;}
+.hero-divider{height:4px;background:linear-gradient(90deg,var(--gold),transparent);}
+section{padding:80px 40px;}
+.section-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+h2.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.1;margin-bottom:16px;}
+.section-desc{font-size:.95rem;color:var(--slate);max-width:560px;line-height:1.75;margin-bottom:48px;}
+.max-w{max-width:1100px;margin:0 auto;}
+.center{text-align:center;}.center .section-desc{margin-left:auto;margin-right:auto;}
+.card{background:white;border-radius:10px;border:1px solid #e8e0d4;padding:32px;transition:transform .2s,box-shadow .2s;}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(10,22,40,.1);}
+.card-gold{border-top:3px solid var(--gold);}
+footer{background:#060e1c;color:rgba(255,255,255,.5);padding:48px 40px 28px;}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:48px;max-width:1100px;margin:0 auto 40px;}
+.footer-brand p{font-size:.82rem;line-height:1.7;margin-top:14px;margin-bottom:20px;}
+.social-links{display:flex;gap:10px;}
+.social-link{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .2s;}
+.social-link:hover{background:var(--gold);border-color:var(--gold);}
+.social-link svg{width:16px;height:16px;fill:rgba(255,255,255,.6);}.social-link:hover svg{fill:white;}
+.footer-col h4{color:white;font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;}
+.footer-col a{display:block;font-size:.8rem;color:rgba(255,255,255,.45);text-decoration:none;margin-bottom:10px;transition:color .15s;}
+.footer-col a:hover{color:var(--gold);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:24px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:12px;overflow:hidden;width:440px;max-width:95vw;animation:modalIn .3s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.modal-header{background:var(--navy);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;}
+.modal-header h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:white;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1.4rem;}
+.modal-body{padding:32px;}
+.modal-role{display:flex;gap:8px;margin-bottom:24px;}
+.role-tab{flex:1;padding:9px;border:1px solid #e0d8cc;border-radius:5px;background:none;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--slate);transition:all .2s;}
+.role-tab.active{background:var(--navy);color:white;border-color:var(--navy);}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--slate);margin-bottom:6px;}
+.form-group input{width:100%;padding:11px 14px;border:1px solid #e0d8cc;border-radius:5px;font-size:.88rem;font-family:'DM Sans',sans-serif;transition:border-color .2s;outline:none;}
+.form-group input:focus{border-color:var(--gold);}
+.modal-submit{width:100%;padding:13px;background:var(--gold);color:white;border:none;border-radius:5px;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.modal-submit:hover{background:var(--navy);}
+.modal-links{margin-top:14px;text-align:center;font-size:.78rem;color:var(--muted);}
+.modal-links a{color:var(--gold);text-decoration:none;}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}nav{padding:0 20px;}section{padding:60px 24px;}.page-hero{padding:60px 24px 40px;}}
+@media(max-width:600px){.nav-links{display:none;}.footer-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html">☎ (+250) 788-591-503</a>
+    <a href="mailto:info@excelacademy.rw">✉ info@excelacademy.rw</a>
+    <a href="#">📧 Staff Email</a>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-btn">EN</button><button class="lang-btn">FR</button><button class="lang-btn">SW</button>
+  </div>
+</div>
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <div class="logo-text"><span class="name">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <div class="dropdown"><span>About Us ▾</span><div class="dropdown-menu">
+      <a href="welcome.html">Welcome Messages</a><a href="about.html">Mission &amp; Vision</a>
+      <a href="values.html">Goals &amp; Core Values</a><a href="documents.html">Key Documents</a>
+    </div></div>
+    <div class="dropdown"><span>Academics ▾</span><div class="dropdown-menu">
+      <a href="nursery.html">Nursery Section</a><a href="primary.html">Primary Section</a>
+      <a href="secondary.html">Secondary Section</a><a href="cambridge.html">Cambridge Curriculum</a>
+      <a href="calendar.html">Academic Calendar</a>
+    </div></div>
+    <div class="dropdown"><span>Online Services ▾</span><div class="dropdown-menu">
+      <a href="#" onclick="openModal('student');return false;">E-learning Portal</a>
+      <a href="#" onclick="openModal('student');return false;">Student MIS</a>
+      <a href="#" onclick="openModal('parent');return false;">Parent Portal</a>
+      <a href="#" onclick="openModal('teacher');return false;">Staff Portal</a>
+      <a href="library.html">Digital Library</a>
+    </div></div>
+    <a href="events.html">Events</a>
+    <a href="contact.html">Contact</a>
+    <a href="#" class="nav-cta" onclick="openModal('student');return false;">Apply Now</a>
+  </div>
+</nav>
+<div class="page-hero">
+  <div class="breadcrumb"><a href="index.html">Home</a> / About Us / <span>Goals &amp; Core Values</span></div>
+  <h1>Our Goals &amp; <em>Core Values</em></h1>
+  <p>The principles that guide every decision we make.</p>
+</div>
+<div class="hero-divider"></div>
+<section>
+  <div class="max-w">
+    <div class="center" style="margin-bottom:48px;">
+      <div class="section-label">What We Stand For</div>
+      <h2 class="section-title">Our Core Values</h2>
+      <p class="section-desc">These values are not words on a wall — they shape how we teach, how we lead, and how we treat every member of our school community.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:64px;">
+      <div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">🎯</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Excellence</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">We pursue the highest standards in teaching, learning, and school life. Mediocrity is never an option.</p></div><div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">🤝</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Integrity</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">We act honestly, transparently, and ethically in all we do — even when no one is watching.</p></div><div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">💛</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Respect</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">Every student, teacher, and parent is treated with dignity. We celebrate our diversity.</p></div><div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">💡</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Innovation</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">We embrace new ideas, technologies, and teaching methods to prepare students for tomorrow.</p></div><div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">🌍</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Service</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">We exist to serve our students, families, and the wider community of Rwanda and beyond.</p></div><div class="card card-gold" style="text-align:center;"><div style="font-size:2.5rem;margin-bottom:16px;">🏆</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:10px;">Discipline</h3><p style="font-size:.83rem;color:var(--slate);line-height:1.7;">Success requires perseverance and hard work. We cultivate self-discipline and personal responsibility.</p></div>
+    </div>
+    <div style="background:var(--navy);border-radius:12px;padding:48px;">
+      <div class="center" style="margin-bottom:36px;"><div class="section-label" style="color:var(--gold-light);">Strategic Direction</div><h2 class="section-title" style="color:white;">Our Goals</h2></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:24px;"><h4 style="color:var(--gold);font-size:.9rem;font-weight:600;margin-bottom:14px;">Academic Goals</h4><ul style="list-style:none;"><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Achieve a 100% pass rate in national and Cambridge examinations by 2028.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Rank among the top 5 schools in Rwanda by academic performance.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Expand our Cambridge program to include more A-Level subjects.</li></ul></div><div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:24px;"><h4 style="color:var(--gold);font-size:.9rem;font-weight:600;margin-bottom:14px;">Infrastructure Goals</h4><ul style="list-style:none;"><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Build a fully equipped science and technology lab on both campuses.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Develop a comprehensive digital library accessible to all students.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Construct a multi-purpose sports and arts facility.</li></ul></div><div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:24px;"><h4 style="color:var(--gold);font-size:.9rem;font-weight:600;margin-bottom:14px;">Community Goals</h4><ul style="list-style:none;"><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Establish a scholarship fund for 50 deserving students annually.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Partner with universities for early admission programs.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Launch a parent leadership council across both campuses.</li></ul></div><div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:24px;"><h4 style="color:var(--gold);font-size:.9rem;font-weight:600;margin-bottom:14px;">Technology Goals</h4><ul style="list-style:none;"><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Achieve 100% digital classroom integration by 2027.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Launch a mobile app for the school management system.</li><li style="font-size:.82rem;color:rgba(255,255,255,.65);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--gold);flex-shrink:0;">→</span>Train all teaching staff in ICT-enhanced instruction.</li></ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo" style="text-decoration:none;">
+        <div class="logo-icon" style="width:40px;height:40px;"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+      </a>
+      <p>Shaping the leaders of tomorrow through quality education, strong values, and excellence across our two campuses in Kigali, Rwanda.</p>
+      <div class="social-links">
+        <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a class="social-link" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+        <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Quick Links</h4><a href="index.html">Home</a><a href="about.html">About Us</a><a href="events.html">Events</a><a href="contact.html">Contact</a></div>
+    <div class="footer-col"><h4>Academics</h4><a href="nursery.html">Nursery</a><a href="primary.html">Primary</a><a href="secondary.html">Secondary</a><a href="cambridge.html">Cambridge</a><a href="calendar.html">Calendar</a></div>
+    <div class="footer-col"><h4>Portals</h4><a href="#" onclick="openModal('student');return false;">Student Login</a><a href="#" onclick="openModal('parent');return false;">Parent Login</a><a href="#" onclick="openModal('teacher');return false;">Staff Login</a><a href="library.html">Library</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Excel Academy. All rights reserved.</span><span>Designed by <a href="#" style="color:var(--gold);text-decoration:none;">Your Tech Team</a></span></div>
+</footer>
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="modalTitle">Student Portal</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-role">
+        <button class="role-tab active" onclick="switchRole('student',this)">Student</button>
+        <button class="role-tab" onclick="switchRole('parent',this)">Parent</button>
+        <button class="role-tab" onclick="switchRole('teacher',this)">Staff</button>
+      </div>
+      <div class="form-group"><label id="idLabel">Student ID</label><input type="text" placeholder="e.g. STU-2026-001"></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password"></div>
+      <button class="modal-submit">Sign In to Portal →</button>
+      <div class="modal-links"><a href="#">Forgot password?</a> &nbsp;|&nbsp; <a href="#">Need help?</a></div>
+    </div>
+  </div>
+</div>
+<script>
+  const roles={student:{title:'Student Portal',label:'Student ID / Registration No.'},parent:{title:'Parent Portal',label:'Parent ID / Phone Number'},teacher:{title:'Staff Portal',label:'Staff ID / Employee No.'}};
+  function openModal(r){document.getElementById('loginModal').classList.add('open');setRole(r);document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',['student','parent','teacher'][i]===r));}
+  function closeModal(){document.getElementById('loginModal').classList.remove('open');}
+  function setRole(r){document.getElementById('modalTitle').textContent=roles[r].title;document.getElementById('idLabel').textContent=roles[r].label;}
+  function switchRole(r,b){setRole(r);document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');}
+  document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+</body>
+</html>
