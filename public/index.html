@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaxe Academy – Uburezi Buzira Inenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --navy: #0a1628;
+        --gold: #c9973a;
+        --gold-light: #e8b95a;
+        --cream: #faf7f2;
+        --warm-white: #fff9f0;
+        --slate: #3a4a5c;
+        --muted: #8a9ab0;
+        --green: #1a6b4a;
+        --red: #b03a2e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--cream);
+        color: var(--navy);
+        overflow-x: hidden;
+    }
+    nav {
+        background: white;
+        padding: 0 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e8e0d4;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 20px rgba(10,22,40,0.06);
+    }
+    .logo {
+        display: flex; align-items: center; gap: 14px;
+        padding: 14px 0; text-decoration: none;
+    }
+    .logo-text .name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.3rem; font-weight: 700;
+        color: var(--navy); display: block;
+    }
+    .logo-text .tagline {
+        font-size: 0.65rem; color: var(--gold);
+        text-transform: uppercase; letter-spacing: 0.12em;
+        font-family: 'DM Mono', monospace;
+    }
+    .hero {
+        position: relative; height: 90vh; min-height: 560px;
+        display: flex; align-items: center;
+        background: linear-gradient(135deg, #1a2a3a 0%, #0a1628 50%, #1a3a2a 100%);
+        color: white;
+    }
+    .hero-content {
+        position: relative; z-index: 2;
+        padding: 0 80px; max-width: 780px;
+    }
+    .hero h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(2.8rem, 6vw, 5rem);
+        font-weight: 700; line-height: 1.08;
+        color: white; margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--gold-light); font-style: italic; }
+    .hero-sub {
+        font-size: 1.05rem; color: rgba(255,255,255,0.75);
+        max-width: 520px; line-height: 1.7; margin-bottom: 36px;
+        font-weight: 300;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+        background: var(--gold); color: white;
+        padding: 14px 32px; border-radius: 4px;
+        text-decoration: none; font-weight: 600;
+        font-size: 0.88rem; letter-spacing: 0.04em;
+        transition: all .25s;
+        border: 2px solid var(--gold);
+    }
+    .btn-primary:hover { background: transparent; color: var(--gold-light); }
+    section { padding: 80px 40px; }
+    .center { text-align: center; }
+    footer {
+        background: #060e1c; color: rgba(255,255,255,0.5);
+        padding: 48px 40px 28px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo">
+        <div class="logo-text">
+            <span class="name">Jaxe Academy</span>
+            <span class="tagline">Uburezi Buzira Inenge</span>
+        </div>
+    </a>
+</nav>
+
+<div class="hero">
+    <div class="hero-content">
+        <h1>Welcome to<br><em>Jaxe Academy</em></h1>
+        <p class="hero-sub">Excellence in education. Building leaders for tomorrow.</p>
+        <div class="hero-btns">
+            <a href="#" class="btn-primary">Apply Now</a>
+        </div>
+    </div>
+</div>
+
+<section class="center">
+    <h2>School Management System</h2>
+    <p>Access your grades, fees, attendance, and more through our integrated portal.</p>
+</section>
+
+<footer>
+    <p>&copy; 2026 Jaxe Academy. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
