@@ -1,5 +1,5 @@
 // controllers/attendanceController.js
-const db = require('../config/db');
+const db = require('./db');
 
 // ── POST /api/attendance ────────────────────────────────────────
 // Teacher marks attendance for a student
