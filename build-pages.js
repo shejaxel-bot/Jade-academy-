@@ -13,9 +13,11 @@ const topbar = `<div class="topbar">
 </div>`;
 
 const nav = `<nav>
-  <a href="index.html" class="logo">
-    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-    <div class="logo-text"><span class="name">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+   <a href="index.html" class="logo">
+        <div class="logo-icon">
+            <img src="Jaxe logo.png" alt="Jaxe Academy Logo">
+        </div>
+    <div class="logo-text"><span class="name">Jaxe Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
   </a>
   <div class="nav-links">
     <a href="index.html">Home</a>
@@ -45,8 +47,8 @@ const footer = `<footer>
   <div class="footer-grid">
     <div class="footer-brand">
       <a href="index.html" class="logo" style="text-decoration:none;">
-        <div class="logo-icon" style="width:40px;height:40px;"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+        <div class="logo-icon" style="width:40px;height:40px;"><img src="Jaxe logo.png" alt="Jaxe Academy Logo"></div>
+        <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Jaxe Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
       </a>
       <p>Shaping the leaders of tomorrow through quality education, strong values, and excellence across our two campuses in Kigali, Rwanda.</p>
       <div class="social-links">
