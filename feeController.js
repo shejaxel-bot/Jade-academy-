@@ -1,5 +1,5 @@
 // controllers/feeController.js
-const db = require('../config/db');
+const db = require('./db');
 
 // ── GET /api/fees/types ─────────────────────────────────────────
 // List all fee types (optionally filter by section/term/year)
