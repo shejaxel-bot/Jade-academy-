@@ -7,26 +7,43 @@
 
 ```
 school-backend/
-├── server.js                  ← Entry point
-├── package.json
-├── .env.example               ← Copy to .env and fill in values
+├── server.js                     ← Entry point (starts Express server)
+├── package.json                  ← Dependencies & scripts
+├── .env.example                  ← Copy to .env and fill in values
+│
 ├── config/
-│   └── db.js                  ← MySQL connection pool
+│   └── db.js                     ← MySQL connection pool setup
+│
 ├── middleware/
-│   └── auth.js                ← JWT protect + role authorize
+│   └── auth.js                   ← JWT protection & role-based authorization
+│
 ├── controllers/
-│   ├── authController.js      ← Login, register, profile
-│   ├── studentController.js   ← Student CRUD + attendance
-│   ├── gradeController.js     ← Grades, report cards, ranking
-│   ├── feeController.js       ← Fee types, payments, statements
-│   └── attendanceController.js← Mark & view attendance
+│   ├── authController.js         ← User login, register, profile management
+│   ├── studentController.js      ← Student CRUD operations + attendance tracking
+│   ├── gradeController.js        ← Grade recording, report cards, ranking
+│   ├── feeController.js          ← Fee types, payment tracking, statements
+│   └── attendanceController.js   ← Mark & retrieve attendance records
+│
 ├── routes/
-│   └── index.js               ← All API routes
+│   └── index.js                  ← Central routing for all API endpoints
+│
 ├── database/
-│   └── database.sql           ← MySQL schema & seed data
-└── public/                    ← Frontend HTML files
-    └── (HTML files here)
+│   └── database.sql              ← MySQL schema, tables, & seed data
+│
+└── public/                       ← Frontend HTML files & assets
+    └── (HTML files, CSS, JS here)
 ```
+
+### 📂 Directory Descriptions
+
+| Directory | Purpose |
+|-----------|---------|
+| **config/** | Database connection & configuration files |
+| **middleware/** | Authentication, authorization, error handling |
+| **controllers/** | Business logic for each feature (Auth, Students, Grades, Fees, Attendance) |
+| **routes/** | API endpoint definitions (GET, POST, PUT, DELETE) |
+| **database/** | SQL schema & initial seed data |
+| **public/** | Frontend HTML, CSS, and JavaScript files |
 
 ---
 
@@ -44,6 +61,13 @@ copy .env.example .env        # Windows
 cp .env.example .env          # Mac/Linux
 
 # Then edit .env with your MySQL credentials
+# Example:
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=yourpassword
+# DB_NAME=school_db
+# JWT_SECRET=your_secret_key
+# PORT=5000
 ```
 
 ### 3. Set up the database
@@ -180,7 +204,7 @@ POST /api/fees/payments
 ### ATTENDANCE
 
 | Method | Endpoint                                    | Access          |
-|--------|---------------------------------------------|------------- -----|
+|--------|---------------------------------------------|-----------------|
 | POST   | /api/attendance                             | Teacher, Admin  |
 | POST   | /api/attendance/bulk                        | Teacher, Admin  |
 | GET    | /api/attendance/class/:classId?date=        | Teacher, Admin  |
@@ -239,3 +263,46 @@ if (data.success) {
   // redirect to portal
 }
 ```
+
+---
+
+## 📝 File Descriptions
+
+### Core Files
+- **server.js** - Main entry point that initializes Express, middleware, routes, and starts the server
+- **package.json** - Project metadata, dependencies, and npm scripts
+
+### Configuration
+- **config/db.js** - MySQL connection pool setup with error handling
+
+### Middleware
+- **middleware/auth.js** - JWT token verification and role-based access control
+
+### Controllers (Business Logic)
+- **authController.js** - Handles user authentication (login, register, password change)
+- **studentController.js** - CRUD operations for student records and attendance data
+- **gradeController.js** - Grade recording, report card generation, class ranking
+- **feeController.js** - Fee management, payment tracking, financial statements
+- **attendanceController.js** - Attendance marking and retrieval
+
+### Routes & Database
+- **routes/index.js** - Centralized API route definitions
+- **database/database.sql** - Complete MySQL schema and seed data
+
+### Frontend
+- **public/** - Static HTML, CSS, and JavaScript files served to clients
+
+---
+
+## 🛠️ Technology Stack
+
+- **Backend**: Node.js + Express.js
+- **Database**: MySQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Frontend**: HTML + JavaScript (Vanilla or framework)
+
+---
+
+## 📞 Support & Questions
+
+For issues or questions about this project, please check the database schema or API documentation above.
