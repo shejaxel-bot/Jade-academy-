@@ -100,8 +100,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);
 .lang-btn:hover{border-color:var(--gold);color:var(--gold);}
 nav{background:white;padding:0 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8e0d4;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(10,22,40,.06);}
 .logo{display:flex;align-items:center;gap:14px;padding:14px 0;text-decoration:none;}
-.logo-icon{width:48px;height:48px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-icon svg{width:28px;height:28px;fill:var(--gold);}
+.logo-icon img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;}
 .logo-text .name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--navy);display:block;}
 .logo-text .tagline{font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-family:'DM Mono',monospace;}
 .nav-links{display:flex;align-items:center;gap:0;}
