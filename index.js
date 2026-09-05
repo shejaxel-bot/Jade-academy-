@@ -2,13 +2,12 @@
 const express = require('express');
 const router  = express.Router();
 
-const { protect, authorize } = require('../middleware/auth');
-
-const authCtrl       = require('../controllers/authController');
-const studentCtrl    = require('../controllers/studentController');
-const gradeCtrl      = require('../controllers/gradeController');
-const feeCtrl        = require('../controllers/feeController');
-const attendanceCtrl = require('../controllers/attendanceController');
+const { protect, authorize } = require('../auth');
+const authCtrl = require('./authController');
+const studentCtrl = require('./studentController');
+const gradeCtrl = require('./gradeController');
+const feeCtrl = require('./feeController');
+const attendanceCtrl = require('./attendanceController');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
