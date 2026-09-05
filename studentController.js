@@ -1,5 +1,5 @@
 // controllers/studentController.js
-const db = require('../config/db');
+const db = require('./db');
 
 // ── GET /api/students ───────────────────────────────────────────
 // Admin & teachers can list all students
