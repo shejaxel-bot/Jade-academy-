@@ -1,5 +1,5 @@
 // controllers/gradeController.js
-const db = require('../config/db');
+const db = require('./db');
 
 // ── POST /api/grades ────────────────────────────────────────────
 // Teacher records grades for a student
