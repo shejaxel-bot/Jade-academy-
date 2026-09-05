@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About Us — Excel Academy</title>
+<title>About Us — Jaxe Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -27,8 +27,13 @@
   /* ── NAV ── */
   nav { background:white; padding:0 40px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e8e0d4; position:sticky; top:0; z-index:100; box-shadow:0 2px 20px rgba(10,22,40,0.06); }
   .logo { display:flex; align-items:center; gap:14px; padding:14px 0; text-decoration:none; }
-  .logo-icon { width:48px; height:48px; background:var(--navy); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .logo-icon svg { width:28px; height:28px; fill:var(--gold); }
+ .logo-icon img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;}
   .logo-text .name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--navy); display:block; }
   .logo-text .tagline { font-size:0.65rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.12em; font-family:'DM Mono',monospace; }
   .nav-links { display:flex; align-items:center; gap:0; }
@@ -128,8 +133,10 @@
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="logo">
-    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+   <a href="index.html" class="logo">
+        <div class="logo-icon">
+            <img src="Jaxe logo.png" alt="Jaxe Academy Logo">
+        </div>
     <div class="logo-text"><span class="name">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
   </a>
   <div class="nav-links">
@@ -278,13 +285,13 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-grid">
+ <div class="footer-grid">
     <div class="footer-brand">
       <a href="index.html" class="logo" style="text-decoration:none;">
-        <div class="logo-icon" style="width:40px;height:40px;"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--gold);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Excel Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
+        <div class="logo-icon" style="width:40px;height:40px;"><img src="Jaxe logo.png" alt="Jaxe Academy Logo"></div>
+        <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Jaxe Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
       </a>
-      <p>Shaping the leaders of tomorrow through quality education, strong values, and a commitment to excellence across our two campuses in Kigali, Rwanda.</p>
+      <p>Shaping the leaders of tomorrow through quality education, strong values, and excellence across our two campuses in Kigali, Rwanda.</p>
       <div class="social-links">
         <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
         <a class="social-link" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
