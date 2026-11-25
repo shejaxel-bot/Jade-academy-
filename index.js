@@ -8,7 +8,7 @@ const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
 const feeCtrl = require('./feeController');
 const attendanceCtrl = require('./attendanceController');
-const { requireStudentAccess, resolveOwnStudentId, requireClassAccess } = require('./studentAccess');
+const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment } = require('./studentAccess');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
@@ -69,12 +69,14 @@ router.get('/students/:id/attendance',
 // Teacher records one grade
 router.post('/grades',
   protect, authorize('teacher', 'admin'),
+  requireTeachingAssignment,
   gradeCtrl.recordGrade
 );
 
 // Teacher records grades for entire class
 router.post('/grades/bulk',
   protect, authorize('teacher', 'admin'),
+  requireBulkTeachingAssignment,
   gradeCtrl.recordBulkGrades
 );
 
