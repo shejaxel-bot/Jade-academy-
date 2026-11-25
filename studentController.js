@@ -18,9 +18,29 @@ exports.getAllStudents = async (req, res) => {
     const conditions = [];
     const params = [];
 
-    if (class_id) { conditions.push('s.class_id = ?');  params.push(class_id); }
-    if (status)   { conditions.push('s.status = ?');     params.push(status); }
-    if (search)   {
+    if (req.user.role === 'teacher') {
+      conditions.push('s.class_id IN (SELECT id FROM classes WHERE teacher_id = ?)');
+      params.push(req.user.id);
+    }
+
+    if (class_id) {
+      if (!Number.isSafeInteger(Number(class_id)) || Number(class_id) < 1) {
+        return res.status(400).json({ success: false, message: 'class_id must be a positive integer.' });
+      }
+      conditions.push('s.class_id = ?');
+      params.push(Number(class_id));
+    }
+    if (status) {
+      if (!['active', 'graduated', 'transferred', 'suspended'].includes(status)) {
+        return res.status(400).json({ success: false, message: 'Invalid student status.' });
+      }
+      conditions.push('s.status = ?');
+      params.push(status);
+    }
+    if (search) {
+      if (typeof search !== 'string' || search.length > 100) {
+        return res.status(400).json({ success: false, message: 'search must be at most 100 characters.' });
+      }
       conditions.push('(u.full_name LIKE ? OR s.reg_number LIKE ?)');
       params.push(`%${search}%`, `%${search}%`);
     }
