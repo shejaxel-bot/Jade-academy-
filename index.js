@@ -8,7 +8,7 @@ const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
 const feeCtrl = require('./feeController');
 const attendanceCtrl = require('./attendanceController');
-const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess } = require('./studentAccess');
+const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess, requireHomeroomClassAccess } = require('./studentAccess');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
@@ -166,7 +166,7 @@ router.post('/attendance/bulk',
 // View class attendance for a date
 router.get('/attendance/class/:classId',
   protect, authorize('teacher', 'admin'),
-  requireClassAccess('classId'),
+  requireHomeroomClassAccess,
   attendanceCtrl.getClassAttendance
 );
 
