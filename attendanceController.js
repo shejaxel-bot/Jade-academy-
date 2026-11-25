@@ -1,20 +1,23 @@
 // controllers/attendanceController.js
 const db = require('./db');
 
+const VALID_STATUSES = new Set(['present', 'absent', 'late', 'excused']);
+const isValidDate = (value) => typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value;
+
 // ── POST /api/attendance ────────────────────────────────────────
 // Teacher marks attendance for a student
 exports.markAttendance = async (req, res) => {
   try {
     const { student_id, class_id, date, status, notes } = req.body;
 
-    if (!student_id || !class_id || !date || !status) {
-      return res.status(400).json({ success: false, message: 'student_id, class_id, date and status are required.' });
+    if (!student_id || !class_id || !isValidDate(date) || !VALID_STATUSES.has(status)) {
+      return res.status(400).json({ success: false, message: 'Valid student_id, class_id, date (YYYY-MM-DD) and status are required.' });
     }
 
     await db.execute(
       `INSERT INTO attendance (student_id, class_id, date, status, notes, marked_by)
        VALUES (?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE status = VALUES(status), notes = VALUES(notes), marked_by = VALUES(marked_by)`,
+       ON DUPLICATE KEY UPDATE class_id = VALUES(class_id), status = VALUES(status), notes = VALUES(notes), marked_by = VALUES(marked_by)`,
       [student_id, class_id, date, status, notes || null, req.user.id]
     );
 
@@ -31,8 +34,10 @@ exports.markBulkAttendance = async (req, res) => {
     const { class_id, date, records } = req.body;
     // records = [{ student_id, status, notes }]
 
-    if (!class_id || !date || !Array.isArray(records) || records.length === 0) {
-      return res.status(400).json({ success: false, message: 'class_id, date and records[] are required.' });
+    if (!class_id || !isValidDate(date) || !Array.isArray(records) ||
+        records.length === 0 || records.length > 100 ||
+        records.some(record => !record || !VALID_STATUSES.has(record.status || 'present'))) {
+      return res.status(400).json({ success: false, message: 'Provide class_id, a valid date, and 1–100 records with valid attendance statuses.' });
     }
 
     const conn = await db.getConnection();
@@ -73,7 +78,7 @@ exports.getClassAttendance = async (req, res) => {
               COALESCE(a.status, 'not_marked') AS status, a.notes
        FROM students s
        JOIN users u ON s.user_id = u.id
-       LEFT JOIN attendance a ON a.student_id = s.id AND a.date = ?
+       LEFT JOIN attendance a ON a.student_id = s.id AND a.class_id = s.class_id AND a.date = ?
        WHERE s.class_id = ?
        ORDER BY u.full_name`,
       [date, req.params.classId]
@@ -98,7 +103,13 @@ exports.getStudentAttendanceSummary = async (req, res) => {
 
     const params = [req.params.studentId];
     let dateFilter = '';
-    if (start_date && end_date) {
+    if ((start_date && !isValidDate(start_date)) || (end_date && !isValidDate(end_date))) {
+      return res.status(400).json({ success: false, message: 'start_date and end_date must use YYYY-MM-DD.' });
+    }
+    if (start_date || end_date) {
+      if (!start_date || !end_date || start_date > end_date) {
+        return res.status(400).json({ success: false, message: 'Provide both dates and ensure start_date is not after end_date.' });
+      }
       dateFilter = 'AND a.date BETWEEN ? AND ?';
       params.push(start_date, end_date);
     }
