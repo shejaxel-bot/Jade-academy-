@@ -11,9 +11,15 @@ exports.recordGrade = async (req, res) => {
       return res.status(400).json({ success: false, message: 'student_id, subject_id, class_id, term and academic_year are required.' });
     }
 
-    // Validate scores
-    if (cat_score < 0 || cat_score > 100 || exam_score < 0 || exam_score > 100) {
-      return res.status(400).json({ success: false, message: 'Scores must be between 0 and 100.' });
+    const catScore = Number(cat_score ?? 0);
+    const examScore = Number(exam_score ?? 0);
+    if (!Number.isFinite(catScore) || !Number.isFinite(examScore) ||
+        catScore < 0 || catScore > 100 || examScore < 0 || examScore > 100) {
+      return res.status(400).json({ success: false, message: 'Scores must be valid numbers between 0 and 100.' });
+    }
+    if (!['term1', 'term2', 'term3'].includes(term) ||
+        !/^\\d{4}-\\d{4}$/.test(academic_year)) {
+      return res.status(400).json({ success: false, message: 'A valid term and academic_year (YYYY-YYYY) are required.' });
     }
 
     await db.execute(
@@ -25,7 +31,7 @@ exports.recordGrade = async (req, res) => {
          remarks     = VALUES(remarks),
          recorded_by = VALUES(recorded_by)`,
       [student_id, subject_id, class_id, term, academic_year,
-       cat_score || 0, exam_score || 0, remarks || null, req.user.id]
+       catScore, examScore, remarks || null, req.user.id]
     );
 
     res.status(201).json({ success: true, message: 'Grade recorded successfully.' });
@@ -46,11 +52,24 @@ exports.recordBulkGrades = async (req, res) => {
       return res.status(400).json({ success: false, message: 'grades array is required.' });
     }
 
-    const values = grades.map(g => [
-      g.student_id, subject_id, class_id, term,
-      academic_year, g.cat_score || 0, g.exam_score || 0,
-      g.remarks || null, req.user.id
-    ]);
+    if (!subject_id || !class_id || !['term1', 'term2', 'term3'].includes(term) ||
+        typeof academic_year !== 'string' || !/^\\d{4}-\\d{4}$/.test(academic_year)) {
+      return res.status(400).json({ success: false, message: 'Valid subject_id, class_id, term and academic_year are required.' });
+    }
+
+    const values = [];
+    for (const grade of grades) {
+      const catScore = Number(grade.cat_score ?? 0);
+      const examScore = Number(grade.exam_score ?? 0);
+      if (!Number.isFinite(catScore) || !Number.isFinite(examScore) ||
+          catScore < 0 || catScore > 100 || examScore < 0 || examScore > 100) {
+        return res.status(400).json({ success: false, message: 'Every CAT and exam score must be between 0 and 100.' });
+      }
+      values.push([
+        grade.student_id, subject_id, class_id, term,
+        academic_year, catScore, examScore, grade.remarks || null, req.user.id
+      ]);
+    }
 
     // Use a transaction for bulk insert
     const conn = await db.getConnection();
@@ -90,6 +109,14 @@ exports.getStudentGrades = async (req, res) => {
     const { term, academic_year } = req.query;
     const params = [req.params.studentId];
     const conditions = ['g.student_id = ?'];
+
+    if (Array.isArray(req.teacherSubjectIds)) {
+      if (!req.teacherSubjectIds.length) {
+        return res.status(404).json({ success: false, message: 'Student grades not found.' });
+      }
+      conditions.push(`g.subject_id IN (${req.teacherSubjectIds.map(() => '?').join(',')})`);
+      params.push(...req.teacherSubjectIds);
+    }
 
     if (term)          { conditions.push('g.term = ?');           params.push(term); }
     if (academic_year) { conditions.push('g.academic_year = ?');  params.push(academic_year); }
@@ -141,9 +168,24 @@ exports.getClassGrades = async (req, res) => {
       return res.status(400).json({ success: false, message: 'term and academic_year are required.' });
     }
 
-    const params = [req.params.classId, term, academic_year];
+    const subjectParams = [];
     let subjectFilter = '';
-    if (subject_id) { subjectFilter = 'AND g.subject_id = ?'; params.push(subject_id); }
+
+    if (subject_id) {
+      if (Array.isArray(req.teacherSubjectIds) && !req.teacherSubjectIds.includes(Number(subject_id))) {
+        return res.status(404).json({ success: false, message: 'Subject grades not found.' });
+      }
+      subjectFilter += 'AND g.subject_id = ? ';
+      subjectParams.push(Number(subject_id));
+    }
+
+    if (Array.isArray(req.teacherSubjectIds)) {
+      if (!req.teacherSubjectIds.length) {
+        return res.status(404).json({ success: false, message: 'Class grades not found.' });
+      }
+      subjectFilter += `AND g.subject_id IN (${req.teacherSubjectIds.map(() => '?').join(',')}) `;
+      subjectParams.push(...req.teacherSubjectIds);
+    }
 
     const [rows] = await db.execute(
       `SELECT s.id AS student_id, s.reg_number,
@@ -152,11 +194,11 @@ exports.getClassGrades = async (req, res) => {
               g.cat_score, g.exam_score, g.total_score, g.grade_letter, g.remarks
        FROM students s
        JOIN users u ON s.user_id = u.id
-       LEFT JOIN grades g   ON g.student_id = s.id AND g.term = ? AND g.academic_year = ? ${subjectFilter}
+       LEFT JOIN grades g ON g.student_id = s.id AND g.term = ? AND g.academic_year = ? ${subjectFilter}
        LEFT JOIN subjects sub ON g.subject_id = sub.id
        WHERE s.class_id = ?
        ORDER BY u.full_name, sub.name`,
-      [term, academic_year, ...( subject_id ? [subject_id] : []), req.params.classId]
+      [term, academic_year, ...subjectParams, req.params.classId]
     );
 
     res.json({ success: true, data: rows });

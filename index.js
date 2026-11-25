@@ -2,12 +2,13 @@
 const express = require('express');
 const router  = express.Router();
 
-const { protect, authorize } = require('../auth');
+const { protect, authorize } = require('./auth');
 const authCtrl = require('./authController');
 const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
 const feeCtrl = require('./feeController');
 const attendanceCtrl = require('./attendanceController');
+const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess, requireHomeroomClassAccess } = require('./studentAccess');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
@@ -30,7 +31,7 @@ router.get('/students/me',
 // Student's own attendance
 router.get('/students/me/attendance',
   protect, authorize('student'),
-  (req, res, next) => { req.params.id = req.user.id; next(); },
+  resolveOwnStudentId,
   studentCtrl.getAttendance
 );
 
@@ -43,18 +44,21 @@ router.get('/students',
 // Admin & teacher: get a specific student
 router.get('/students/:id',
   protect, authorize('admin', 'teacher', 'parent'),
+  requireStudentAccess('id'),
   studentCtrl.getStudent
 );
 
 // Admin & teacher: update student info
 router.put('/students/:id',
   protect, authorize('admin', 'teacher'),
+  requireStudentAccess('id'),
   studentCtrl.updateStudent
 );
 
 // Get attendance for a specific student
 router.get('/students/:id/attendance',
   protect, authorize('admin', 'teacher', 'parent'),
+  requireStudentAccess('id'),
   studentCtrl.getAttendance
 );
 
@@ -65,41 +69,42 @@ router.get('/students/:id/attendance',
 // Teacher records one grade
 router.post('/grades',
   protect, authorize('teacher', 'admin'),
+  requireTeachingAssignment,
   gradeCtrl.recordGrade
 );
 
 // Teacher records grades for entire class
 router.post('/grades/bulk',
   protect, authorize('teacher', 'admin'),
+  requireBulkTeachingAssignment,
   gradeCtrl.recordBulkGrades
 );
 
 // Student views their own grades
 router.get('/grades/me',
   protect, authorize('student'),
-  (req, res, next) => {
-    // resolve student_id from user_id
-    req.params.studentId = req.user.id;  // controller will resolve
-    next();
-  },
+  resolveOwnStudentId,
   gradeCtrl.getStudentGrades
 );
 
 // Parent / teacher / admin views a student's grades
 router.get('/grades/student/:studentId',
   protect, authorize('admin', 'teacher', 'parent'),
+  requireGradeStudentAccess,
   gradeCtrl.getStudentGrades
 );
 
 // Teacher / admin views all grades for a class
 router.get('/grades/class/:classId',
   protect, authorize('admin', 'teacher'),
+  requireClassAccess('classId'),
   gradeCtrl.getClassGrades
 );
 
 // Report card
 router.get('/grades/report-card/:studentId',
   protect, authorize('admin', 'teacher', 'parent', 'student'),
+  requireStudentAccess('studentId'),
   gradeCtrl.getReportCard
 );
 
@@ -117,13 +122,14 @@ router.get('/fees/summary', protect, authorize('admin'), feeCtrl.getFeeSummary);
 // Student fee statement (own)
 router.get('/fees/me',
   protect, authorize('student'),
-  (req, res, next) => { req.params.studentId = req.user.id; next(); },
+  resolveOwnStudentId,
   feeCtrl.getStudentFeeStatement
 );
 
 // Admin/parent views a student's fee statement
 router.get('/fees/student/:studentId',
   protect, authorize('admin', 'parent'),
+  requireStudentAccess('studentId'),
   feeCtrl.getStudentFeeStatement
 );
 
@@ -146,24 +152,28 @@ router.delete('/fees/payments/:id',
 // Mark single student attendance
 router.post('/attendance',
   protect, authorize('teacher', 'admin'),
+  requireAttendanceAssignment,
   attendanceCtrl.markAttendance
 );
 
 // Mark entire class attendance at once
 router.post('/attendance/bulk',
   protect, authorize('teacher', 'admin'),
+  requireAttendanceAssignment,
   attendanceCtrl.markBulkAttendance
 );
 
 // View class attendance for a date
 router.get('/attendance/class/:classId',
   protect, authorize('teacher', 'admin'),
+  requireHomeroomClassAccess,
   attendanceCtrl.getClassAttendance
 );
 
 // View a student's attendance summary
 router.get('/attendance/student/:studentId/summary',
   protect, authorize('admin', 'teacher', 'parent'),
+  requireStudentAccess('studentId'),
   attendanceCtrl.getStudentAttendanceSummary
 );
 

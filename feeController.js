@@ -123,57 +123,105 @@ exports.getStudentFeeStatement = async (req, res) => {
 // ── POST /api/fees/payments ─────────────────────────────────────
 // Admin/accountant records a fee payment
 exports.recordPayment = async (req, res) => {
+  const {
+    student_id, fee_type_id, amount_paid, payment_method,
+    reference_no, payment_date, notes
+  } = req.body || {};
+
+  const studentId = Number(student_id);
+  const feeTypeId = Number(fee_type_id);
+  const amount = Number(amount_paid);
+  const allowedMethods = ['cash', 'bank_transfer', 'mobile_money', 'card'];
+
+  if (!Number.isSafeInteger(studentId) || studentId < 1 ||
+      !Number.isSafeInteger(feeTypeId) || feeTypeId < 1 ||
+      !Number.isFinite(amount) || amount <= 0) {
+    return res.status(400).json({ success: false, message: 'Valid student_id, fee_type_id and positive amount_paid are required.' });
+  }
+
+  if (payment_method && !allowedMethods.includes(payment_method)) {
+    return res.status(400).json({ success: false, message: 'Invalid payment_method.' });
+  }
+
+  let conn;
   try {
-    const { student_id, fee_type_id, amount_paid, payment_method, reference_no, payment_date, notes } = req.body;
+    conn = await db.getConnection();
+    await conn.beginTransaction();
 
-    if (!student_id || !fee_type_id || !amount_paid) {
-      return res.status(400).json({ success: false, message: 'student_id, fee_type_id and amount_paid are required.' });
-    }
-
-    // Check the fee type exists and get the amount
-    const [feeRows] = await db.execute('SELECT * FROM fee_types WHERE id = ?', [fee_type_id]);
+    // Lock the fee type row so simultaneous payments cannot both pass the balance check.
+    const [feeRows] = await conn.execute(
+      'SELECT id, amount, section, academic_year FROM fee_types WHERE id = ? FOR UPDATE',
+      [feeTypeId]
+    );
     if (!feeRows.length) {
+      await conn.rollback();
       return res.status(404).json({ success: false, message: 'Fee type not found.' });
     }
 
-    // Check how much has already been paid
-    const [[{ already_paid }]] = await db.execute(
+    const [studentRows] = await conn.execute(
+      `SELECT s.id, c.section
+       FROM students s
+       LEFT JOIN classes c ON c.id = s.class_id
+       WHERE s.id = ? LIMIT 1`,
+      [studentId]
+    );
+    if (!studentRows.length) {
+      await conn.rollback();
+      return res.status(404).json({ success: false, message: 'Student not found.' });
+    }
+
+    const fee = feeRows[0];
+    const studentSection = studentRows[0].section || 'primary';
+    if (fee.section !== 'all' && fee.section !== studentSection) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'This fee type does not apply to the student section.' });
+    }
+
+    const [[{ already_paid }]] = await conn.execute(
       'SELECT COALESCE(SUM(amount_paid), 0) AS already_paid FROM fee_payments WHERE student_id = ? AND fee_type_id = ?',
-      [student_id, fee_type_id]
+      [studentId, feeTypeId]
     );
 
-    const fee       = feeRows[0];
-    const remaining = fee.amount - already_paid;
-
-    if (amount_paid > remaining) {
+    const remaining = Number(fee.amount) - Number(already_paid);
+    if (amount > remaining + 0.000001) {
+      await conn.rollback();
       return res.status(400).json({
         success: false,
-        message: `Overpayment detected. Remaining balance is ${remaining}. Amount paid cannot exceed this.`
+        message: `Overpayment detected. Remaining balance is ${remaining.toFixed(2)}.`
       });
     }
 
-    const [result] = await db.execute(
+    const [result] = await conn.execute(
       `INSERT INTO fee_payments
          (student_id, fee_type_id, amount_paid, payment_method, reference_no, payment_date, received_by, notes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [student_id, fee_type_id, amount_paid,
-       payment_method || 'cash', reference_no || null,
-       payment_date || new Date().toISOString().split('T')[0],
-       req.user.id, notes || null]
+      [
+        studentId, feeTypeId, amount, payment_method || 'cash',
+        reference_no || null, payment_date || new Date().toISOString().slice(0, 10),
+        req.user.id, notes || null
+      ]
     );
 
-    res.status(201).json({
+    await conn.commit();
+    return res.status(201).json({
       success: true,
       message: 'Payment recorded successfully.',
       payment_id: result.insertId,
-      new_balance: (remaining - amount_paid).toFixed(2),
+      new_balance: (remaining - amount).toFixed(2),
     });
   } catch (err) {
+    if (conn) {
+      try { await conn.rollback(); } catch (rollbackError) {
+        console.error('Payment rollback failed:', rollbackError);
+      }
+    }
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ success: false, message: 'Reference number already exists.' });
     }
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Server error.' });
+    console.error('Record payment error:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  } finally {
+    if (conn) conn.release();
   }
 };
 

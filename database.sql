@@ -158,10 +158,10 @@ CREATE TABLE events (
 );
 
 -- ── SAMPLE DATA ──────────────────────────────────────────────────
--- Default admin user  (password: Admin@123)
-INSERT INTO users (user_code, full_name, email, phone, password, role) VALUES
-('ADMIN-001', 'System Administrator', 'admin@excelacademy.rw', '+250788000001',
- '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LzTfAkq2Zx2', 'admin');
+-- Do not ship a default administrator account.
+-- Create the first administrator using: npm run create-admin
+-- Supply ADMIN_USER_CODE, ADMIN_FULL_NAME, ADMIN_EMAIL and ADMIN_PASSWORD
+-- as temporary environment variables. Use a unique password of at least 12 characters.
 
 -- Sample classes
 INSERT INTO classes (name, section, academic_year) VALUES

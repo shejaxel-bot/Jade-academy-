@@ -6,8 +6,12 @@ const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const routes     = require('./index');
+const db         = require('./db');
 
 const app  = express();
+
+// Render and other reverse proxies forward the original client IP.
+if (process.env.TRUST_PROXY === 'true') app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // ── Security Middleware ─────────────────────────────────────────
@@ -35,7 +39,7 @@ app.use('/api/auth/login', authLimiter);
 
 // ── Body Parser ─────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // ── Health Check ────────────────────────────────────────────────
 app.get('/health', (req, res) => {
@@ -64,15 +68,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ── Start Server ────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`
-  ╔════════════════════════════════════════╗
-  ║   School Management API               ║
-  ║   Running on http://localhost:${PORT}    ║
-  ║   Environment: ${process.env.NODE_ENV || 'development'}           ║
-  ╚════════════════════════════════════════╝
-  `);
-});
+// Start only when executed directly; importing the app in tests has no side effects.
+const startServer = async () => {
+  try {
+    await db.ready;
+    const server = app.listen(PORT, () => {
+      console.log(`School Management API listening on port ${PORT} (${process.env.NODE_ENV || 'development'}).`);
+    });
+    return server;
+  } catch (err) {
+    console.error('Server startup aborted because the database is unavailable.');
+    process.exitCode = 1;
+    return null;
+  }
+};
 
-module.exports = app;
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };
