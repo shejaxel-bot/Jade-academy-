@@ -2,7 +2,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const { protect, authorize } = require('../auth');
+const { protect, authorize } = require('./auth');
 const authCtrl = require('./authController');
 const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
