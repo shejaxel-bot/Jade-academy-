@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard | Jaxe Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b1728;--navy2:#14243b;--gold:#c9973a;--gold2:#e7b95c;--cream:#faf7f1;--white:#fff;--ink:#17263a;--muted:#738096;--line:#e7eaf0;--green:#18794e;--red:#b43b36;--shadow:0 12px 36px rgba(13,27,46,.07}
+*{box-sizing:border-box}body{margin:0;background:#f4f6f9;color:var(--ink);font-family:'DM Sans',sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.layout{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:#dce4ef;padding:24px 17px;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:12px;align-items:center;padding:6px 10px 26px;border-bottom:1px solid #27364c}
+.brand img{width:43px;height:43px;border-radius:50%;object-fit:cover}.brand-title{font-family:Manrope;font-weight:800;color:#fff;line-height:1.1}.brand-sub{font-size:11px;color:#99a8bb;letter-spacing:1px;margin-top:4px}
+.nav-label{font-size:10px;letter-spacing:1.7px;color:#7f91a8;font-weight:700;margin:24px 12px 10px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#b9c5d4;text-align:left;padding:11px 13px;border-radius:9px;display:flex;align-items:center;gap:11px;font-size:14px;transition:.15s}
+.nav button:hover,.nav button.active{background:#1b2d45;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--gold)}.nav .ico{width:20px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid #27364c;padding:17px 8px 4px}.user-mini{display:flex;align-items:center;gap:10px;margin-bottom:14px}.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:800;display:grid;place-items:center}.user-mini strong{display:block;color:white;font-size:13px}.user-mini small{color:#9cacc0;font-size:11px}.side-actions{display:flex;gap:8px}.side-actions button{flex:1;background:#1b2d45;border:1px solid #2b405a;color:#dce4ef;border-radius:7px;padding:9px;font-size:12px}
+.main{min-width:0;padding:30px clamp(18px,4vw,48px) 55px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:30px}.eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}.topbar h1{font-family:Manrope;font-size:27px;margin:6px 0 0;letter-spacing:-.7px}.topbar-right{display:flex;gap:10px;align-items:center}.today{color:var(--muted);font-size:13px}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;font-size:13px;transition:.15s}.btn-primary{background:var(--gold);color:var(--navy)}.btn-primary:hover{background:var(--gold2)}.btn-secondary{background:#edf1f6;color:var(--ink)}.btn-danger{background:#fff1ef;color:var(--red)}
+.page{display:none}.page.active{display:block}.welcome{background:linear-gradient(120deg,var(--navy),#1d3552);border-radius:16px;padding:27px 30px;color:#fff;position:relative;overflow:hidden;margin-bottom:22px}.welcome:after{content:'✦';position:absolute;font-size:150px;color:rgba(201,151,58,.11);right:35px;top:-38px}.welcome h2{font-family:Manrope;font-size:23px;margin:0 0 8px}.welcome p{color:#c1cfdf;margin:0;font-size:14px;max-width:520px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:23px}.stat{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px 19px;box-shadow:var(--shadow)}.stat .label{color:var(--muted);font-size:12px;font-weight:600}.stat .value{font-family:Manrope;font-weight:800;font-size:25px;margin-top:9px}.stat .sub{font-size:11px;color:#96a1b1;margin-top:6px}.stat .sicon{float:right;background:#f8f2e7;color:#9c6d1e;border-radius:9px;padding:9px}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.panel h3{font-family:Manrope;font-size:16px;margin:0}.panel p.helper{color:var(--muted);font-size:12px;margin:7px 0 0}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:500px}th{text-align:left;font-size:11px;color:#7b8798;font-weight:700;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:12px 10px;border-bottom:1px solid #f0f2f5;font-size:12px}tbody tr:last-child td{border-bottom:0}.tag{display:inline-block;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:700;background:#edf5f0;color:var(--green)}.tag.inactive{background:#fff0ef;color:var(--red)}.empty{color:var(--muted);padding:26px;text-align:center;font-size:13px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.field{display:grid;gap:6px;margin-bottom:14px}.field label{font-size:12px;font-weight:700;color:#5b687b}.field input,.field select,.field textarea,.search{border:1px solid #dfe4eb;border-radius:8px;padding:10px 12px;background:#fff;outline:none;color:var(--ink);width:100%;font-size:13px}.field input:focus,.field select:focus,.field textarea:focus,.search:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c9973a20}.search{width:min(340px,100%)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.formgrid .full{grid-column:1/-1}.form-actions{display:flex;gap:8px;flex-wrap:wrap}.notice{display:none;padding:11px 13px;border-radius:8px;font-size:12px;margin:12px 0}.notice.show{display:block}.notice.success{background:#eaf6ef;color:#176842}.notice.error{background:#fff0ef;color:#a6342e}
+.money{font-weight:700}.muted{color:var(--muted)}.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.quick{padding:18px;border:1px solid var(--line);border-radius:12px;background:white}.quick h4{font-size:14px;margin:0 0 6px}.quick p{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 14px}.soon{font-size:10px;color:#8d6a26;background:#fff5e4;border-radius:20px;padding:4px 7px}
+.loading{font-size:12px;color:var(--muted);padding:20px;text-align:center}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;min-height:0;padding:14px}.brand{padding-bottom:12px}.nav-label{margin:12px 10px 8px}.nav{grid-template-columns:repeat(2,1fr)}.sidebar-bottom{margin-top:15px}.main{padding:22px 15px 35px}.topbar{align-items:flex-start;flex-wrap:wrap}.topbar h1{font-size:23px}.cards3{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.welcome{padding:22px}.welcome h2{font-size:20px}}
+@media(max-width:420px){.cards{grid-template-columns:1fr}.topbar-right{width:100%;justify-content:space-between}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand"><img src="Jaxe logo.png" alt="Jaxe Academy logo"><div><div class="brand-title">Jaxe Academy</div><div class="brand-sub">ADMINISTRATION</div></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav class="nav" aria-label="Admin navigation">
+    <button class="active" data-page="overview"><span class="ico">⌂</span>Overview</button>
+    <button data-page="students"><span class="ico">♙</span>Students</button>
+    <button data-page="accounts"><span class="ico">＋</span>Register account</button>
+    <button data-page="finance"><span class="ico">▤</span>Finance</button>
+    <button data-page="tools"><span class="ico">⚙</span>Management tools</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="user-mini"><div class="avatar" id="avatar">A</div><div><strong id="adminName">Administrator</strong><small>School admin</small></div></div>
+    <div class="side-actions"><button id="homeBtn">↗ Website</button><button id="logoutBtn">⇥ Sign out</button></div>
+  </div>
+</aside>
+<main class="main">
+<header class="topbar"><div><div class="eyebrow">Jaxe Academy • Admin portal</div><h1 id="pageTitle">Overview</h1></div><div class="topbar-right"><span class="today" id="today"></span><button class="btn btn-secondary" id="refreshBtn">↻ Refresh</button></div></header>
+<section class="page active" id="page-overview">
+  <div class="welcome"><h2 id="welcomeTitle">Welcome back!</h2><p>Manage your school operations, review student records and monitor fee collections from one place.</p></div>
+  <div class="cards">
+    <div class="stat"><span class="sicon">♙</span><div class="label">Registered students</div><div class="value" id="studentCount">—</div><div class="sub">All student records</div></div>
+    <div class="stat"><span class="sicon">▤</span><div class="label">Fees collected</div><div class="value" id="feeCollected">—</div><div class="sub">Current academic year</div></div>
+    <div class="stat"><span class="sicon">↗</span><div class="label">Transactions</div><div class="value" id="transactionCount">—</div><div class="sub">Recorded payments</div></div>
+    <div class="stat"><span class="sicon">♧</span><div class="label">Students paid</div><div class="value" id="paidStudents">—</div><div class="sub">Distinct fee-paying students</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><h3>Recently listed students</h3><button class="btn btn-secondary" data-goto="students">View all</button></div><div id="recentStudents" class="loading">Loading students…</div></div>
+    <div class="panel"><div class="panel-head"><h3>Quick actions</h3></div><div class="cards3" style="grid-template-columns:1fr"><div class="quick"><h4>Register a new account</h4><p>Create student, parent, teacher or administrator accounts.</p><button class="btn btn-primary" data-goto="accounts">Create account</button></div><div class="quick"><h4>Manage fees</h4><p>Review collections and configure fee types for the academic year.</p><button class="btn btn-secondary" data-goto="finance">Open finance</button></div></div></div>
+  </div>
+</section>
+<section class="page" id="page-students">
+  <div class="panel"><div class="panel-head"><div><h3>Student directory</h3><p class="helper">Records retrieved from the school database.</p></div></div>
+    <div class="toolbar"><input class="search" id="studentSearch" placeholder="Search name or registration number…"><button class="btn btn-secondary" id="searchBtn">Search</button><button class="btn btn-secondary" id="clearSearch">Clear</button></div>
+    <div id="studentsTable" class="loading">Loading students…</div><div class="toolbar" style="justify-content:space-between;margin-top:14px"><span id="studentPagination" class="muted"></span><div><button class="btn btn-secondary" id="prevPage">← Previous</button> <button class="btn btn-secondary" id="nextPage">Next →</button></div></div>
+  </div>
+</section>
+<section class="page" id="page-accounts">
+  <div class="panel"><div class="panel-head"><div><h3>Create school account</h3><p class="helper">Creates a login account. Student accounts also create their student record.</p></div></div>
+    <div id="registerNotice" class="notice"></div>
+    <form id="registerForm"><div class="formgrid">
+      <div class="field"><label for="newFullName">Full name *</label><input id="newFullName" name="full_name" required maxlength="100" placeholder="Full name"></div>
+      <div class="field"><label for="newRole">Account role *</label><select id="newRole" name="role" required><option value="student">Student</option><option value="parent">Parent</option><option value="teacher">Teacher</option><option value="admin">Administrator</option></select></div>
+      <div class="field"><label for="newEmail">Email</label><input id="newEmail" name="email" type="email" placeholder="email@example.com"></div>
+      <div class="field"><label for="newPhone">Phone</label><input id="newPhone" name="phone" maxlength="20" placeholder="Phone number"></div>
+      <div class="field"><label for="newPassword">Temporary password *</label><input id="newPassword" name="password" type="password" required minlength="8" autocomplete="new-password"></div>
+      <div class="field"><label for="newGender">Gender (students only)</label><select id="newGender" name="gender"><option value="">Not specified</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option></select></div>
+      <div class="field"><label for="newDob">Date of birth (students only)</label><input id="newDob" name="date_of_birth" type="date"></div>
+      <div class="field"><label for="newClassId">Class ID (students only)</label><input id="newClassId" name="class_id" type="number" min="1" placeholder="Optional database class ID"></div>
+      <div class="field"><label for="newParentId">Parent account ID (students only)</label><input id="newParentId" name="parent_id" type="number" min="1" placeholder="Optional parent user ID"></div>
+      <div class="field full"><label for="newAddress">Address (students only)</label><input id="newAddress" name="address" placeholder="Optional home address"></div>
+    </div><div class="form-actions"><button class="btn btn-primary" type="submit">Create account</button><button class="btn btn-secondary" type="reset">Clear form</button></div></form>
+  </div>
+</section>
+<section class="page" id="page-finance">
+  <div class="cards">
+    <div class="stat"><span class="sicon">▤</span><div class="label">Total collected</div><div class="value" id="financeCollected">—</div><div class="sub">Academic year</div></div>
+    <div class="stat"><span class="sicon">♙</span><div class="label">Students paid</div><div class="value" id="financePaidStudents">—</div><div class="sub">Unique student accounts</div></div>
+    <div class="stat"><span class="sicon">⇄</span><div class="label">Transactions</div><div class="value" id="financeTransactions">—</div><div class="sub">Payments recorded</div></div>
+    <div class="stat"><span class="sicon">◷</span><div class="label">Academic year</div><div class="value" id="yearLabel">—</div><div class="sub">Summary filter</div></div>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h3>Fee collection summary</h3><p class="helper">Breakdown by payment method, from the finance API.</p></div><button class="btn btn-secondary" id="reloadFinance">Reload summary</button></div><div id="paymentMethods" class="loading">Loading summary…</div></div>
+  <div class="grid2">
+    <div class="panel"><h3 style="margin-bottom:15px">Create fee type</h3><div id="feeTypeNotice" class="notice"></div><form id="feeTypeForm"><div class="field"><label>Name *</label><input name="name" required placeholder="e.g. Term 1 tuition"></div><div class="field"><label>Amount *</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Section</label><select name="section"><option value="all">All sections</option><option value="nursery">Nursery</option><option value="primary">Primary</option><option value="secondary">Secondary</option><option value="cambridge">Cambridge</option></select></div><div class="field"><label>Term</label><select name="term"><option value="">Not specified</option><option value="term1">Term 1</option><option value="term2">Term 2</option><option value="term3">Term 3</option></select></div><div class="field"><label>Academic year *</label><input name="academic_year" required value=""></div><div class="field"><label>Due date</label><input name="due_date" type="date"></div><button class="btn btn-primary">Save fee type</button></form></div>
+    <div class="panel"><h3 style="margin-bottom:15px">Fee types</h3><div id="feeTypes" class="loading">Loading fee types…</div></div>
+  </div>
+  <div class="panel"><h3 style="margin-bottom:15px">Record a payment</h3><p class="helper" style="margin-bottom:14px">Choose the student and fee type, then record the payment. IDs are shown in the selection labels.</p><div id="paymentNotice" class="notice"></div><form id="paymentForm"><div class="formgrid"><div class="field"><label>Student *</label><select name="student_id" id="paymentStudent" required><option value="">Loading students…</option></select></div><div class="field"><label>Fee type *</label><select name="fee_type_id" id="paymentFeeType" required><option value="">Loading fee types…</option></select></div><div class="field"><label>Amount paid *</label><input name="amount_paid" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Payment method</label><select name="payment_method"><option value="cash">Cash</option><option value="bank_transfer">Bank transfer</option><option value="mobile_money">Mobile money</option><option value="card">Card</option></select></div><div class="field"><label>Reference number (optional)</label><input name="reference_no" maxlength="100"></div><div class="field"><label>Payment date</label><input name="payment_date" type="date" id="paymentDate"></div><div class="field full"><label>Notes (optional)</label><input name="notes" maxlength="255"></div></div><button class="btn btn-primary">Record payment</button></form></div>
+</section>
+<section class="page" id="page-tools">
+  <div class="cards3">
+    <div class="quick"><h4>Student records</h4><p>Search the directory, review student status and contact information.</p><button class="btn btn-secondary" data-goto="students">Open students</button></div>
+    <div class="quick"><h4>Account registration</h4><p>Register students, parents, teachers and additional administrators.</p><button class="btn btn-secondary" data-goto="accounts">Register accounts</button></div>
+    <div class="quick"><h4>Finance</h4><p>Create fee types, view collection summaries and record payments.</p><button class="btn btn-secondary" data-goto="finance">Open finance</button></div>
+    <div class="quick"><h4>Attendance</h4><p>Attendance recording and summary endpoints are available in the API. A dedicated admin attendance workspace needs class-list APIs.</p><span class="soon">Workspace not yet connected</span></div>
+    <div class="quick"><h4>Grades & report cards</h4><p>Grade and report-card endpoints exist. Admin review screens require class and subject selection data.</p><span class="soon">Workspace not yet connected</span></div>
+    <div class="quick"><h4>Class management</h4><p>Class and subject creation/list endpoints are not currently present in the backend routes.</p><span class="soon">API expansion needed</span></div>
+  </div>
+</section>
+</main>
+</div>
+<script>
+(() => {
+  'use strict';
+  const API_BASE_URL = window.JAXE_API_URL || 'http://127.0.0.1:5000';
+  const token = localStorage.getItem('token');
+  let user = null;
+  try { user = JSON.parse(localStorage.getItem('user') || 'null'); } catch { user = null; }
+  if (!token || !user || user.role !== 'admin') {
+    window.location.replace('index.html?portal=admin');
+    return;
+  }
+  const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = (v) => Number(v || 0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
+  const year = (() => { const now=new Date(); return now.getFullYear()+'-'+(now.getFullYear()+1); })();
+  $('today').textContent = new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  $('welcomeTitle').textContent = 'Welcome back, '+(user.full_name || 'Administrator')+'!';
+  $('adminName').textContent = user.full_name || 'Administrator';
+  $('avatar').textContent = (user.full_name || 'A').trim().charAt(0).toUpperCase();
+  $('yearLabel').textContent = year;
+  $('paymentDate').value = new Date().toISOString().slice(0,10);
+  document.querySelector('[name="academic_year"]').value = year;
+  const pages = ['overview','students','accounts','finance','tools'];
+  const titles = {overview:'Overview',students:'Students',accounts:'Register account',finance:'Finance',tools:'Management tools'};
+  let studentPage = 1, studentSearch = '';
+  let cachedStudents = [];
+  let cachedFeeTypes = [];
+  const api = async (path, options={}) => {
+    const res = await fetch(API_BASE_URL+path,{...options,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json',...(options.headers||{})}});
+    let data; try{data=await res.json()}catch{throw new Error('Unexpected response from API (HTTP '+res.status+').')}
+    if(!res.ok || data.success===false) throw new Error(data.message || 'Request failed.');
+    return data;
+  };
+  function showNotice(id,msg,ok=false){const el=$(id);el.textContent=msg;el.className='notice show '+(ok?'success':'error');}
+  function clearNotice(id){const el=$(id);el.className='notice';el.textContent='';}
+  function switchPage(page){if(!pages.includes(page))return;pages.forEach(p=>{$('page-'+p).classList.toggle('active',p===page)});document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));$('pageTitle').textContent=titles[page];if(page==='students')loadStudents();if(page==='finance')loadFinance();}
+  document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
+  document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.goto)));
+  $('homeBtn').onclick=()=>window.location.href='index.html';
+  $('logoutBtn').onclick=()=>{localStorage.removeItem('token');localStorage.removeItem('user');window.location.replace('index.html?portal=admin');};
+  $('refreshBtn').onclick=()=>refreshAll();
+  async function loadStudents(){
+    $('recentStudents').innerHTML='<div class="loading">Loading students…</div>';
+    try{const d=await api('/api/students?limit=5&page=1');cachedStudents=d.data||[];
+      if(!cachedStudents.length){$('recentStudents').innerHTML='<div class="empty">No student records found yet.</div>';return;}
+      $('recentStudents').innerHTML=tableHtml(cachedStudents.slice(0,5),false);
+    }catch(e){$('recentStudents').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}
+  }
+  function tableHtml(rows,paged=true){
+    if(!rows.length)return '<div class="empty">No matching students.</div>';
+    return '<div class="table-wrap"><table><thead><tr><th>REGISTRATION</th><th>STUDENT</th><th>CLASS</th><th>STATUS</th></tr></thead><tbody>'+rows.map(s=>'<tr><td>'+esc(s.reg_number)+'</td><td><strong>'+esc(s.full_name)+'</strong><br><span class="muted">'+esc(s.email||'No email')+'</span></td><td>'+esc(s.class_name||'Unassigned')+'</td><td><span class="tag '+(s.status==='active'?'':'inactive')+'">'+esc(s.status||'unknown')+'</span></td></tr>').join('')+'</tbody></table></div>';
+  }
+  async function loadStudentDirectory(){
+    $('studentsTable').innerHTML='<div class="loading">Loading student directory…</div>';
+    try{const d=await api('/api/students?limit=20&page='+studentPage+'&search='+encodeURIComponent(studentSearch));cachedStudents=d.data||[];
+      $('studentsTable').innerHTML=tableHtml(cachedStudents);
+      $('studentPagination').textContent='Page '+studentPage+' • '+d.total+' total records';
+      $('prevPage').disabled=studentPage<=1;$('nextPage').disabled=studentPage*20>=d.total;
+      $('prevPage').style.opacity=$('prevPage').disabled?.5:1;$('nextPage').style.opacity=$('nextPage').disabled?.5:1;
+    }catch(e){$('studentsTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}
+  }
+  function loadStudents(){loadStudentDirectory();}
+  $('searchBtn').onclick=()=>{studentSearch=$('studentSearch').value.trim();studentPage=1;loadStudents();};
+  $('studentSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('searchBtn').click();}});
+  $('clearSearch').onclick=()=>{$('studentSearch').value='';studentSearch='';studentPage=1;loadStudents();};
+  $('prevPage').onclick=()=>{if(studentPage>1){studentPage--;loadStudents();}};
+  $('nextPage').onclick=()=>{studentPage++;loadStudents();};
+  $('registerForm').addEventListener('submit',async e=>{
+    e.preventDefault();clearNotice('registerNotice');const f=e.currentTarget;
+    const role=f.role.value;const extra={};
+    if(role==='student'){if(f.gender.value)extra.gender=f.gender.value;if(f.date_of_birth.value)extra.date_of_birth=f.date_of_birth.value;if(f.class_id.value)extra.class_id=Number(f.class_id.value);if(f.parent_id.value)extra.parent_id=Number(f.parent_id.value);if(f.address.value)extra.address=f.address.value;}
+    const payload={full_name:f.full_name.value.trim(),role,password:f.password.value,email:f.email.value.trim()||undefined,phone:f.phone.value.trim()||undefined,extra};
+    try{const d=await api('/api/auth/register',{method:'POST',body:JSON.stringify(payload)});showNotice('registerNotice','Account created. Login code: '+d.user_code, true);f.reset();}catch(err){showNotice('registerNotice',err.message);}
+  });
+  async function loadFinance(){
+    $('paymentMethods').innerHTML='<div class="loading">Loading financial summary…</div>';
+    try{const [summary,fees]=await Promise.all([api('/api/fees/summary?academic_year='+encodeURIComponent(year)),api('/api/fees/types?academic_year='+encodeURIComponent(year))]);
+      const totals=summary.data?.totals||{};$('financeCollected').textContent=money(totals.total_collected);$('feeCollected').textContent=money(totals.total_collected);$('financeTransactions').textContent=totals.total_transactions||0;$('transactionCount').textContent=totals.total_transactions||0;$('financePaidStudents').textContent=totals.students_paid||0;$('paidStudents').textContent=totals.students_paid||0;
+      const methods=summary.data?.by_method||[];$('paymentMethods').innerHTML=methods.length?'<table><thead><tr><th>PAYMENT METHOD</th><th>TOTAL COLLECTED</th></tr></thead><tbody>'+methods.map(m=>'<tr><td>'+esc((m.payment_method||'unknown').replace(/_/g,' '))+'</td><td class="money">'+money(m.total)+'</td></tr>').join('')+'</tbody></table>':'<div class="empty">No payments recorded for this academic year.</div>';
+      cachedFeeTypes=fees.data||[];renderFeeTypes();populatePaymentFeeSelect();
+    }catch(e){$('paymentMethods').innerHTML='<div class="empty">'+esc(e.message)+'</div>';$('financeCollected').textContent='—';}
+  }
+  function renderFeeTypes(){const target=$('feeTypes');if(!cachedFeeTypes.length){target.innerHTML='<div class="empty">No fee types for '+esc(year)+'.</div>';return;}target.innerHTML='<div class="table-wrap"><table><thead><tr><th>FEE</th><th>SECTION</th><th>AMOUNT</th><th>TERM</th></tr></thead><tbody>'+cachedFeeTypes.map(f=>'<tr><td>'+esc(f.name)+'</td><td>'+esc(f.section||'all')+'</td><td class="money">'+money(f.amount)+'</td><td>'+esc(f.term||'—')+'</td></tr>').join('')+'</tbody></table></div>';}
+  function populatePaymentFeeSelect(){const sel=$('paymentFeeType');sel.innerHTML='<option value="">Choose fee type…</option>'+cachedFeeTypes.map(f=>'<option value="'+esc(f.id)+'">'+esc(f.name)+' — '+esc(f.section||'all')+' — '+money(f.amount)+'</option>').join('');}
+  async function loadFinanceStudents(){try{const d=await api('/api/students?limit=100&page=1');const sel=$('paymentStudent');sel.innerHTML='<option value="">Choose student…</option>'+(d.data||[]).map(s=>'<option value="'+esc(s.id)+'">'+esc(s.reg_number)+' • '+esc(s.full_name)+'</option>').join('');}catch(e){$('paymentStudent').innerHTML='<option>'+esc(e.message)+'</option>';}}
+  $('reloadFinance').onclick=()=>loadFinance();
+  $('feeTypeForm').addEventListener('submit',async e=>{e.preventDefault();clearNotice('feeTypeNotice');const f=e.currentTarget;const payload={name:f.name.value.trim(),amount:Number(f.amount.value),section:f.section.value,term:f.term.value||null,academic_year:f.academic_year.value.trim(),due_date:f.due_date.value||null};try{await api('/api/fees/types',{method:'POST',body:JSON.stringify(payload)});showNotice('feeTypeNotice','Fee type saved successfully.',true);f.reset();f.academic_year.value=year;await loadFinance();}catch(err){showNotice('feeTypeNotice',err.message);}});
+  $('paymentForm').addEventListener('submit',async e=>{e.preventDefault();clearNotice('paymentNotice');const f=e.currentTarget;const payload={student_id:Number(f.student_id.value),fee_type_id:Number(f.fee_type_id.value),amount_paid:Number(f.amount_paid.value),payment_method:f.payment_method.value,reference_no:f.reference_no.value.trim()||undefined,payment_date:f.payment_date.value||undefined,notes:f.notes.value.trim()||undefined};try{const d=await api('/api/fees/payments',{method:'POST',body:JSON.stringify(payload)});showNotice('paymentNotice','Payment recorded successfully. New balance: '+money(d.new_balance),true);f.reset();$('paymentDate').value=new Date().toISOString().slice(0,10);await loadFinance();}catch(err){showNotice('paymentNotice',err.message);}});
+  async function refreshAll(){await Promise.all([loadStudents(),loadFinance(),loadFinanceStudents()]);}
+  $('refreshBtn').onclick=refreshAll;
+  $('refreshBtn').disabled=false;
+  refreshAll();
+})();
+</script>
+</body>
+</html>
