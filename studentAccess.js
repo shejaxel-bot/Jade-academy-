@@ -328,4 +328,34 @@ const requireGradeStudentAccess = async (req, res, next) => {
   }
 };
 
-module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess };
+
+const requireHomeroomClassAccess = async (req, res, next) => {
+  const classId = positiveId(req.params.classId);
+  if (!classId) {
+    return res.status(400).json({ success: false, message: 'A valid class ID is required.' });
+  }
+  if (req.user.role === 'admin') {
+    req.classId = classId;
+    return next();
+  }
+  if (req.user.role !== 'teacher') {
+    return res.status(403).json({ success: false, message: 'Access denied.' });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      'SELECT id FROM classes WHERE id = ? AND teacher_id = ? LIMIT 1',
+      [classId, req.user.id]
+    );
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: 'Class not found.' });
+    }
+    req.classId = classId;
+    return next();
+  } catch (err) {
+    console.error('Homeroom class access check failed:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireHomeroomClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess };
