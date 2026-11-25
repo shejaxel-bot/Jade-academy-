@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
     let profile = null;
     if (user.role === 'student') {
       const [profiles] = await db.execute(
-        `SELECT s.id AS student_id, s.reg_number, s.class_id,
+        `SELECT s.id, s.id AS student_id, s.reg_number, s.class_id,
                 s.date_of_birth, s.gender, s.status,
                 c.name AS class_name, c.section, c.academic_year
          FROM students s
