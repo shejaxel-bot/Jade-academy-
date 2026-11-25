@@ -8,7 +8,7 @@ const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
 const feeCtrl = require('./feeController');
 const attendanceCtrl = require('./attendanceController');
-const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment } = require('./studentAccess');
+const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment } = require('./studentAccess');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
@@ -152,12 +152,14 @@ router.delete('/fees/payments/:id',
 // Mark single student attendance
 router.post('/attendance',
   protect, authorize('teacher', 'admin'),
+  requireAttendanceAssignment,
   attendanceCtrl.markAttendance
 );
 
 // Mark entire class attendance at once
 router.post('/attendance/bulk',
   protect, authorize('teacher', 'admin'),
+  requireAttendanceAssignment,
   attendanceCtrl.markBulkAttendance
 );
 
