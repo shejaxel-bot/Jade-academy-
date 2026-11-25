@@ -11,9 +11,15 @@ exports.recordGrade = async (req, res) => {
       return res.status(400).json({ success: false, message: 'student_id, subject_id, class_id, term and academic_year are required.' });
     }
 
-    // Validate scores
-    if (cat_score < 0 || cat_score > 100 || exam_score < 0 || exam_score > 100) {
-      return res.status(400).json({ success: false, message: 'Scores must be between 0 and 100.' });
+    const catScore = Number(cat_score ?? 0);
+    const examScore = Number(exam_score ?? 0);
+    if (!Number.isFinite(catScore) || !Number.isFinite(examScore) ||
+        catScore < 0 || catScore > 100 || examScore < 0 || examScore > 100) {
+      return res.status(400).json({ success: false, message: 'Scores must be valid numbers between 0 and 100.' });
+    }
+    if (!['term1', 'term2', 'term3'].includes(term) ||
+        !/^\\d{4}-\\d{4}$/.test(academic_year)) {
+      return res.status(400).json({ success: false, message: 'A valid term and academic_year (YYYY-YYYY) are required.' });
     }
 
     await db.execute(
@@ -25,7 +31,7 @@ exports.recordGrade = async (req, res) => {
          remarks     = VALUES(remarks),
          recorded_by = VALUES(recorded_by)`,
       [student_id, subject_id, class_id, term, academic_year,
-       cat_score || 0, exam_score || 0, remarks || null, req.user.id]
+       catScore, examScore, remarks || null, req.user.id]
     );
 
     res.status(201).json({ success: true, message: 'Grade recorded successfully.' });
@@ -46,11 +52,24 @@ exports.recordBulkGrades = async (req, res) => {
       return res.status(400).json({ success: false, message: 'grades array is required.' });
     }
 
-    const values = grades.map(g => [
-      g.student_id, subject_id, class_id, term,
-      academic_year, g.cat_score || 0, g.exam_score || 0,
-      g.remarks || null, req.user.id
-    ]);
+    if (!subject_id || !class_id || !['term1', 'term2', 'term3'].includes(term) ||
+        typeof academic_year !== 'string' || !/^\\d{4}-\\d{4}$/.test(academic_year)) {
+      return res.status(400).json({ success: false, message: 'Valid subject_id, class_id, term and academic_year are required.' });
+    }
+
+    const values = [];
+    for (const grade of grades) {
+      const catScore = Number(grade.cat_score ?? 0);
+      const examScore = Number(grade.exam_score ?? 0);
+      if (!Number.isFinite(catScore) || !Number.isFinite(examScore) ||
+          catScore < 0 || catScore > 100 || examScore < 0 || examScore > 100) {
+        return res.status(400).json({ success: false, message: 'Every CAT and exam score must be between 0 and 100.' });
+      }
+      values.push([
+        grade.student_id, subject_id, class_id, term,
+        academic_year, catScore, examScore, grade.remarks || null, req.user.id
+      ]);
+    }
 
     // Use a transaction for bulk insert
     const conn = await db.getConnection();
