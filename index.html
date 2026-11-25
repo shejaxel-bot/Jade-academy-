@@ -368,7 +368,13 @@
     }
     .modal-submit:hover { background: var(--navy); }
     .modal-links { margin-top: 14px; text-align: center; font-size: 0.78rem; color: var(--muted); }
-    .modal-links a { color: var(--gold); text-decoration: none; }
+    .modal-links a, .forgot-password { color: var(--gold); text-decoration: none; }
+    .forgot-password { border: 0; background: none; cursor: pointer; font: inherit; }
+    .forgot-password:hover { text-decoration: underline; }
+    .login-message { margin-top: 14px; padding: 10px 12px; border-radius: 5px; font-size: 0.82rem; line-height: 1.5; }
+    .login-message.error { color: #8b1e18; background: #fff0ee; border: 1px solid #f2c7c2; }
+    .login-message.success { color: #155b3b; background: #edf8f1; border: 1px solid #c5e7d1; }
+    .modal-submit:disabled { opacity: .65; cursor: wait; }
 
     /* ── FOOTER ── */
     footer {
@@ -666,7 +672,7 @@
     <button class="role-tab" onclick="setRole('teacher')">Teacher</button>
     <button class="role-tab" onclick="setRole('admin')">Admin</button>
 </div>
-            <form onsubmit="handleLogin(event)">
+            <form id="loginForm">
                 <div class="form-group">
                     <label>Email or ID</label>
                     <input type="text" id="username" required>
@@ -677,8 +683,9 @@
                 </div>
                 <button type="submit" class="modal-submit">Login</button>
                 <div class="modal-links">
-                    <a href="#">Forgot Password?</a>
+                    <button type="button" class="forgot-password" id="forgotPasswordButton">Forgot Password?</button>
                 </div>
+                <p id="loginMessage" class="login-message" role="status" aria-live="polite" hidden></p>
             </form>
         </div>
     </div>
@@ -688,11 +695,12 @@
 let currentRole = 'student';
 let currentSlide = 0;
 
-function openModal(role) {
-    currentRole = role;
+const API_BASE_URL = window.JAXE_API_URL || 'http://127.0.0.1:5000';
+
+function openModal(role = 'student') {
     document.getElementById('loginModal').classList.add('open');
-    document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
-    event.target.closest('.role-tab') || document.querySelector(`[onclick="setRole('${role}')"]`)?.classList.add('active');
+    setRole(role);
+    clearLoginMessage();
 }
 
 function closeModal() {
@@ -701,57 +709,101 @@ function closeModal() {
 
 function setRole(role) {
     currentRole = role;
-    document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.role-tab').forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.role === role);
+    });
+    clearLoginMessage();
+}
+
+function showLoginMessage(message, type = 'error') {
+    const messageElement = document.getElementById('loginMessage');
+    messageElement.textContent = message;
+    messageElement.className = `login-message ${type}`;
+    messageElement.hidden = false;
+}
+
+function clearLoginMessage() {
+    const messageElement = document.getElementById('loginMessage');
+    if (!messageElement) return;
+    messageElement.textContent = '';
+    messageElement.hidden = true;
+    messageElement.className = 'login-message';
 }
 
 async function handleLogin(e) {
     e.preventDefault();
-    const username = document.getElementById('username').value;
+    clearLoginMessage();
+
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
-    
-    try {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json',},
-            body: JSON.stringify({user_code: username,  // or email
-            password: password,}),
-        
-           const data = await response.json();
-          if (data.success) {
-        localStorage.setItem('token', data.token);// redirect to portal
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            // Store token and redirect based on role
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            
-            alert(`✅ Login successful!\nRole: ${data.user.role}`);
-            
-            // Redirect to dashboard based on role
-            if (data.user.role === 'student') {
-                window.location.href = '/student-dashboard.html';
-            } else if (data.user.role === 'parent') {
-                window.location.href = '/parent-dashboard.html';
-            } else if (data.user.role === 'teacher') {
-                window.location.href = '/teacher-dashboard.html';
-            } else if (data.user.role === 'admin') {
-                window.location.href = '/admin-dashboard.html';
-            }
-        } else {
-            alert(`❌ Login failed: ${data.message}`);
-        }
-    } catch (err) {
-        alert(`❌ Error: ${err.message}`);
-        console.error('Login error:', err);
+    const submitButton = document.querySelector('#loginForm .modal-submit');
+
+    if (!username || !password) {
+        showLoginMessage('Please enter your email or user ID and password.');
+        return;
     }
-    
-    closeModal();
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Signing in...';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_code: username, password })
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(`The server returned an unreadable response (HTTP ${response.status}).`);
+        }
+
+        if (!response.ok || !data.success) {
+            showLoginMessage(data.message || `Login failed (HTTP ${response.status}).`);
+            return;
+        }
+
+        if (!data.user || !data.token) {
+            throw new Error('The server response is missing the user account or login token.');
+        }
+
+        if (data.user.role !== currentRole) {
+            showLoginMessage(`This account belongs to the ${data.user.role} role. Select that role and try again.`);
+            return;
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        showLoginMessage('Login successful. Opening your portal...', 'success');
+
+        const dashboards = {
+            student: 'student-dashboard.html',
+            parent: 'parent-dashboard.html',
+            teacher: 'teacher-dashboard.html',
+            admin: 'admin-dashboard.html'
+        };
+        window.location.href = dashboards[data.user.role];
+    } catch (err) {
+        console.error('Portal login error:', err);
+        showLoginMessage(`Could not reach the login service. ${err.message} Check that the backend is running on port 5000 and that CORS allows this Live Server address.`);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Login';
+    }
 }
-}
+
+document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+
+document.getElementById('forgotPasswordButton')?.addEventListener('click', () => {
+    showLoginMessage('Password reset is not set up yet. No password-reset endpoint or email service is configured. Please contact the school administrator to reset your account.');
+});
+
+document.querySelectorAll('.role-tab').forEach((tab) => {
+    tab.dataset.role = tab.getAttribute('onclick').match(/setRole\('([^']+)'\)/)?.[1] || 'student';
+});
 
 function goSlide(n) {
     currentSlide = n;
