@@ -6,7 +6,15 @@ const db = require('./db');
 exports.getAllStudents = async (req, res) => {
   try {
     const { class_id, status, search, page = 1, limit = 20 } = req.query;
-    const offset = (page - 1) * limit;
+    const pageNumber = Number(page);
+    const pageSize = Number(limit);
+
+    if (!Number.isInteger(pageNumber) || pageNumber < 1 ||
+        !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
+      return res.status(400).json({ success: false, message: 'page must be positive and limit must be between 1 and 100.' });
+    }
+
+    const offset = (pageNumber - 1) * pageSize;
     const conditions = [];
     const params = [];
 
@@ -29,7 +37,7 @@ exports.getAllStudents = async (req, res) => {
        ${where}
        ORDER BY u.full_name
        LIMIT ? OFFSET ?`,
-      [...params, Number(limit), Number(offset)]
+      [...params, pageSize, offset]
     );
 
     const [[{ total }]] = await db.execute(
@@ -38,7 +46,7 @@ exports.getAllStudents = async (req, res) => {
       params
     );
 
-    res.json({ success: true, total, page: Number(page), data: students });
+    res.json({ success: true, total, page: pageNumber, limit: pageSize, data: students });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -49,7 +57,9 @@ exports.getAllStudents = async (req, res) => {
 exports.getStudent = async (req, res) => {
   try {
     const [rows] = await db.execute(
-      `SELECT s.*, u.full_name, u.email, u.phone, u.user_code,
+      `SELECT s.id, s.user_id, s.reg_number, s.class_id, s.date_of_birth,
+              s.gender, s.address, s.admission_date, s.status,
+              u.full_name, u.email, u.phone, u.user_code,
               c.name AS class_name, c.section, c.academic_year,
               pu.full_name AS parent_name, pu.phone AS parent_phone
        FROM students s
@@ -105,7 +115,16 @@ exports.updateStudent = async (req, res) => {
   try {
     const { class_id, date_of_birth, gender, address, status } = req.body;
 
-    await db.execute(
+    if (class_id !== undefined && class_id !== null &&
+        (!Number.isInteger(Number(class_id)) || Number(class_id) < 1)) {
+      return res.status(400).json({ success: false, message: 'class_id must be a positive integer.' });
+    }
+
+    if (status !== undefined && !['active', 'graduated', 'transferred', 'suspended'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid student status.' });
+    }
+
+    const [result] = await db.execute(
       `UPDATE students SET
          class_id      = COALESCE(?, class_id),
          date_of_birth = COALESCE(?, date_of_birth),
@@ -113,8 +132,13 @@ exports.updateStudent = async (req, res) => {
          address       = COALESCE(?, address),
          status        = COALESCE(?, status)
        WHERE id = ?`,
-      [class_id, date_of_birth, gender, address, status, req.params.id]
+      [class_id ?? null, date_of_birth ?? null, gender ?? null, address ?? null, status ?? null, req.params.id]
     );
+
+    if (result.affectedRows === 0) {
+      const [existing] = await db.execute('SELECT id FROM students WHERE id = ?', [req.params.id]);
+      if (!existing.length) return res.status(404).json({ success: false, message: 'Student not found.' });
+    }
 
     res.json({ success: true, message: 'Student updated successfully.' });
   } catch (err) {
