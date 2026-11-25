@@ -90,4 +90,48 @@ const resolveOwnStudentId = async (req, res, next) => {
   }
 };
 
-module.exports = { requireStudentAccess, resolveOwnStudentId };
+
+const requireClassAccess = (parameterName = 'classId') => async (req, res, next) => {
+  const classId = positiveId(req.params[parameterName]);
+
+  if (!classId) {
+    return res.status(400).json({ success: false, message: 'A valid class ID is required.' });
+  }
+
+  if (req.user.role === 'admin') {
+    req.classId = classId;
+    return next();
+  }
+
+  if (req.user.role !== 'teacher') {
+    return res.status(403).json({ success: false, message: 'Access denied.' });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      `SELECT id FROM classes
+       WHERE id = ?
+         AND (
+           teacher_id = ?
+           OR EXISTS (
+             SELECT 1 FROM class_subjects cs
+             WHERE cs.class_id = classes.id AND cs.teacher_id = ?
+           )
+         )
+       LIMIT 1`,
+      [classId, req.user.id, req.user.id]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: 'Class not found.' });
+    }
+
+    req.classId = classId;
+    return next();
+  } catch (err) {
+    console.error('Class access check failed:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess };
