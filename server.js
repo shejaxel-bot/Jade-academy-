@@ -17,8 +17,27 @@ const PORT = process.env.PORT || 5000;
 // ── Security Middleware ─────────────────────────────────────────
 app.use(helmet());
 
+const configuredClientOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedClientOrigins = new Set([
+  ...configuredClientOrigins,
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+]);
+
 app.use(cors({
-  origin:      process.env.CLIENT_URL || 'http://localhost:3000',
+  origin(origin, callback) {
+    // Requests without an Origin header (for example, local health checks) are allowed.
+    if (!origin || allowedClientOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin is not allowed by the CORS policy.'));
+  },
   credentials: true,
 }));
 
