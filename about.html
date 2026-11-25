@@ -163,16 +163,16 @@
     <div class="dropdown">
       <span>Online Services ▾</span>
       <div class="dropdown-menu">
-        <a href="#" onclick="openModal('student');return false;">E-learning Portal</a>
-        <a href="#" onclick="openModal('student');return false;">Student MIS</a>
-        <a href="#" onclick="openModal('parent');return false;">Parent Portal</a>
-        <a href="#" onclick="openModal('teacher');return false;">Staff Portal</a>
+        <a href="index.html?portal=student" >E-learning Portal</a>
+        <a href="index.html?portal=student" >Student MIS</a>
+        <a href="index.html?portal=parent" >Parent Portal</a>
+        <a href="index.html?portal=teacher" >Staff Portal</a>
         <a href="library.html">Digital Library</a>
       </div>
     </div>
     <a href="events.html">Events</a>
     <a href="contact.html">Contact</a>
-    <a href="#" class="nav-cta" onclick="openModal('student');return false;">Apply Now</a>
+    <a href="index.html?portal=student" class="nav-cta" >Apply Now</a>
   </div>
 </nav>
 
@@ -310,8 +310,8 @@
       <a href="calendar.html">Academic Calendar</a>
     </div>
     <div class="footer-col">
-      <h4>Admissions</h4>
-      <a href="#" onclick="openModal('student');return false;">Apply Online</a>
+      <h4>Portal Access</h4>
+      <a href="index.html?portal=student" >Apply Online</a>
       <a href="documents.html">Requirements</a>
       <a href="documents.html">Fee Structure</a>
       <a href="contact.html">Contact Admissions</a>
@@ -323,34 +323,5 @@
   </div>
 </footer>
 
-<!-- LOGIN MODAL -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalTitle">Student Portal</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-role">
-        <button class="role-tab active" onclick="switchRole('student',this)">Student</button>
-        <button class="role-tab" onclick="switchRole('parent',this)">Parent</button>
-        <button class="role-tab" onclick="switchRole('teacher',this)">Staff</button>
-      </div>
-      <div class="form-group"><label id="idLabel">Student ID / Registration No.</label><input type="text" placeholder="e.g. STU-2026-001"></div>
-      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password"></div>
-      <button class="modal-submit">Sign In to Portal →</button>
-      <div class="modal-links"><a href="#">Forgot password?</a> &nbsp;|&nbsp; <a href="#">Need help?</a></div>
-    </div>
-  </div>
-</div>
-
-<script>
-  const roles = { student:{title:'Student Portal',label:'Student ID / Registration No.'}, parent:{title:'Parent Portal',label:'Parent ID / Phone Number'}, teacher:{title:'Staff Portal',label:'Staff ID / Employee No.'} };
-  function openModal(role) { document.getElementById('loginModal').classList.add('open'); setRole(role); document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',['student','parent','teacher'][i]===role)); }
-  function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
-  function setRole(role) { document.getElementById('modalTitle').textContent=roles[role].title; document.getElementById('idLabel').textContent=roles[role].label; }
-  function switchRole(role,btn) { setRole(role); document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); }
-  document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-</script>
 </body>
 </html>
