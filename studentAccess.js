@@ -142,17 +142,15 @@ const requireTeachingAssignment = async (req, res, next) => {
     });
   }
 
-  if (req.user.role === 'admin') return next();
-  if (req.user.role !== 'teacher') {
-    return res.status(403).json({ success: false, message: 'Access denied.' });
-  }
-
   try {
     const [rows] = await db.execute(
       `SELECT s.id
        FROM students s
        WHERE s.id = ? AND s.class_id = ?
+         AND EXISTS (SELECT 1 FROM subjects WHERE id = ?)
          AND (
+           ? = 'admin'
+           OR
            EXISTS (SELECT 1 FROM classes c WHERE c.id = s.class_id AND c.teacher_id = ?)
            OR EXISTS (
              SELECT 1 FROM class_subjects cs
@@ -162,7 +160,7 @@ const requireTeachingAssignment = async (req, res, next) => {
            )
          )
        LIMIT 1`,
-      [studentId, classId, req.user.id, subjectId, req.user.id]
+      [studentId, classId, subjectId, req.user.role, req.user.id, subjectId, req.user.id]
     );
 
     if (!rows.length) {
@@ -189,22 +187,20 @@ const requireBulkTeachingAssignment = async (req, res, next) => {
     return res.status(400).json({ success: false, message: 'grades[] must contain at most 100 valid student IDs.' });
   }
 
-  if (req.user.role === 'admin') return next();
-  if (req.user.role !== 'teacher') {
-    return res.status(403).json({ success: false, message: 'Access denied.' });
-  }
-
   try {
     const [classes] = await db.execute(
       `SELECT id FROM classes
-       WHERE id = ? AND (
+       WHERE id = ? AND EXISTS (SELECT 1 FROM subjects WHERE id = ?)
+         AND (
+         ? = 'admin'
+         OR
          teacher_id = ?
          OR EXISTS (
            SELECT 1 FROM class_subjects cs
            WHERE cs.class_id = classes.id AND cs.subject_id = ? AND cs.teacher_id = ?
          )
        ) LIMIT 1`,
-      [classId, req.user.id, subjectId, req.user.id]
+      [classId, subjectId, req.user.role, req.user.id, subjectId, req.user.id]
     );
 
     if (!classes.length) {
@@ -229,4 +225,51 @@ const requireBulkTeachingAssignment = async (req, res, next) => {
   }
 };
 
-module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment };
+
+const requireAttendanceAssignment = async (req, res, next) => {
+  const { class_id, student_id, records } = req.body || {};
+  const classId = positiveId(class_id);
+  if (!classId) {
+    return res.status(400).json({ success: false, message: 'A valid class_id is required.' });
+  }
+
+  const studentIds = Array.isArray(records)
+    ? records.map(record => positiveId(record && record.student_id))
+    : [positiveId(student_id)];
+
+  if (!studentIds.length || studentIds.some(id => !id) || studentIds.length > 100) {
+    return res.status(400).json({ success: false, message: 'Provide valid student IDs (maximum 100 records).' });
+  }
+
+  try {
+    if (req.user.role !== 'admin') {
+      if (req.user.role !== 'teacher') {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+      }
+      const [classes] = await db.execute(
+        'SELECT id FROM classes WHERE id = ? AND teacher_id = ? LIMIT 1',
+        [classId, req.user.id]
+      );
+      if (!classes.length) {
+        return res.status(404).json({ success: false, message: 'Class not found.' });
+      }
+    }
+
+    const placeholders = studentIds.map(() => '?').join(',');
+    const [students] = await db.execute(
+      `SELECT id FROM students WHERE class_id = ? AND id IN (${placeholders})`,
+      [classId, ...studentIds]
+    );
+
+    if (students.length !== studentIds.length) {
+      return res.status(400).json({ success: false, message: 'Every student must belong to the specified class.' });
+    }
+
+    return next();
+  } catch (err) {
+    console.error('Attendance assignment check failed:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment };
