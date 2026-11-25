@@ -638,6 +638,10 @@
             <a href="pages/about.html">About</a>
             <a href="pages/calendar.html">Calendar</a>
             <a href="pages/events.html">Events</a>
+            <a href="index.html?portal=student">Student Portal</a>
+            <a href="index.html?portal=parent">Parent Portal</a>
+            <a href="index.html?portal=teacher">Staff Portal</a>
+            <a href="index.html?portal=admin">Admin Portal</a>
         </div>
         <div class="footer-col">
             <h4>Academics</h4>
@@ -823,6 +827,12 @@ setInterval(() => {
 document.getElementById('loginModal')?.addEventListener('click', (e) => {
     if (e.target === document.getElementById('loginModal')) closeModal();
 });
+
+// Allow portal links from other pages to open the matching role on this page.
+const requestedPortal = new URLSearchParams(window.location.search).get('portal');
+if (['student', 'parent', 'teacher', 'admin'].includes(requestedPortal)) {
+    openModal(requestedPortal);
+}
 </script>
 
 </body>
