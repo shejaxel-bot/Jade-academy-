@@ -106,14 +106,14 @@ const requireClassAccess = (parameterName = 'classId') => async (req, res, next)
 
   try {
     const [rows] = await db.execute(
-      `SELECT id FROM classes
+      `SELECT id, teacher_id FROM classes
        WHERE id = ?
-         AND (
-           teacher_id = ?
-
-         )
+         AND (teacher_id = ? OR EXISTS (
+           SELECT 1 FROM class_subjects cs
+           WHERE cs.class_id = classes.id AND cs.teacher_id = ?
+         ))
        LIMIT 1`,
-      [classId, req.user.id]
+      [classId, req.user.id, req.user.id]
     );
 
     if (!rows.length) {
@@ -121,6 +121,15 @@ const requireClassAccess = (parameterName = 'classId') => async (req, res, next)
     }
 
     req.classId = classId;
+    if (Number(rows[0].teacher_id) !== Number(req.user.id)) {
+      const [assignments] = await db.execute(
+        'SELECT subject_id FROM class_subjects WHERE class_id = ? AND teacher_id = ?',
+        [classId, req.user.id]
+      );
+      req.teacherSubjectIds = assignments.map(row => Number(row.subject_id));
+    } else {
+      req.teacherSubjectIds = null;
+    }
     return next();
   } catch (err) {
     console.error('Class access check failed:', err);
@@ -272,4 +281,51 @@ const requireAttendanceAssignment = async (req, res, next) => {
   }
 };
 
-module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment };
+
+const requireGradeStudentAccess = async (req, res, next) => {
+  const studentId = positiveId(req.params.studentId);
+  if (!studentId) {
+    return res.status(400).json({ success: false, message: 'A valid student ID is required.' });
+  }
+
+  if (req.user.role === 'admin' || req.user.role === 'parent' || req.user.role === 'student') {
+    return requireStudentAccess('studentId')(req, res, next);
+  }
+
+  if (req.user.role !== 'teacher') {
+    return res.status(403).json({ success: false, message: 'Access denied.' });
+  }
+
+  try {
+    const [students] = await db.execute(
+      'SELECT s.id, s.class_id, c.teacher_id FROM students s LEFT JOIN classes c ON c.id = s.class_id WHERE s.id = ? LIMIT 1',
+      [studentId]
+    );
+    if (!students.length) {
+      return res.status(404).json({ success: false, message: 'Student not found.' });
+    }
+
+    if (Number(students[0].teacher_id) === Number(req.user.id)) {
+      req.teacherSubjectIds = null;
+      req.studentId = studentId;
+      return next();
+    }
+
+    const [assignments] = await db.execute(
+      'SELECT subject_id FROM class_subjects WHERE class_id = ? AND teacher_id = ?',
+      [students[0].class_id, req.user.id]
+    );
+    if (!assignments.length) {
+      return res.status(404).json({ success: false, message: 'Student not found.' });
+    }
+
+    req.teacherSubjectIds = assignments.map(row => Number(row.subject_id));
+    req.studentId = studentId;
+    return next();
+  } catch (err) {
+    console.error('Grade access check failed:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+module.exports = { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess };
