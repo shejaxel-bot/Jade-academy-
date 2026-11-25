@@ -8,7 +8,7 @@ const studentCtrl = require('./studentController');
 const gradeCtrl = require('./gradeController');
 const feeCtrl = require('./feeController');
 const attendanceCtrl = require('./attendanceController');
-const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment } = require('./studentAccess');
+const { requireStudentAccess, resolveOwnStudentId, requireClassAccess, requireTeachingAssignment, requireBulkTeachingAssignment, requireAttendanceAssignment, requireGradeStudentAccess } = require('./studentAccess');
 
 // ══════════════════════════════════════════════════
 //  AUTH ROUTES  /api/auth
@@ -90,7 +90,7 @@ router.get('/grades/me',
 // Parent / teacher / admin views a student's grades
 router.get('/grades/student/:studentId',
   protect, authorize('admin', 'teacher', 'parent'),
-  requireStudentAccess('studentId'),
+  requireGradeStudentAccess,
   gradeCtrl.getStudentGrades
 );
 
