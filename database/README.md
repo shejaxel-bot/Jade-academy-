@@ -26,3 +26,17 @@ The current schema supports one linked parent account per student through `stude
 ## Existing cloud database
 
 The TiDB database was created from the current schema without sample INSERT statements. Keep that production-like database separate from local demo data. Never run the full sample-data section against a live school database without reviewing every statement first.
+
+## Creating the first administrator
+
+The schema intentionally contains no default administrator password. After configuring the database connection, create the first admin account using the one-time CLI command:
+
+```bash
+ADMIN_USER_CODE=ADM-INITIAL-001 \
+ADMIN_FULL_NAME="School Administrator" \
+ADMIN_EMAIL="admin@example.com" \
+ADMIN_PASSWORD="use-a-unique-password-of-at-least-12-characters" \
+npm run create-admin
+```
+
+Replace every example value. Do not use the example password. Do not commit these values to Git. Run this command only once for the initial account; later accounts should be created through the admin-protected registration endpoint.
