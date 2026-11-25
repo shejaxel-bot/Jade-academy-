@@ -9,7 +9,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test",
-    "check:syntax": "node --check server.js && node --check db.js && node --check auth.js && node --check authController.js && node --check studentAccess.js && node --check studentController.js && node --check gradeController.js && node --check feeController.js && node --check attendanceController.js && node --check index.js"
+    "check:syntax": "node --check server.js && node --check db.js && node --check auth.js && node --check authController.js && node --check studentAccess.js && node --check studentController.js && node --check gradeController.js && node --check feeController.js && node --check attendanceController.js && node --check index.js",
+    "create-admin": "node scripts/create-admin.js"
   },
   "engines": {
     "node": ">=20"
