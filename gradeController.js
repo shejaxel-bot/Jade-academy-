@@ -110,6 +110,14 @@ exports.getStudentGrades = async (req, res) => {
     const params = [req.params.studentId];
     const conditions = ['g.student_id = ?'];
 
+    if (Array.isArray(req.teacherSubjectIds)) {
+      if (!req.teacherSubjectIds.length) {
+        return res.status(404).json({ success: false, message: 'Student grades not found.' });
+      }
+      conditions.push(`g.subject_id IN (${req.teacherSubjectIds.map(() => '?').join(',')})`);
+      params.push(...req.teacherSubjectIds);
+    }
+
     if (term)          { conditions.push('g.term = ?');           params.push(term); }
     if (academic_year) { conditions.push('g.academic_year = ?');  params.push(academic_year); }
 
@@ -160,9 +168,24 @@ exports.getClassGrades = async (req, res) => {
       return res.status(400).json({ success: false, message: 'term and academic_year are required.' });
     }
 
-    const params = [req.params.classId, term, academic_year];
+    const subjectParams = [];
     let subjectFilter = '';
-    if (subject_id) { subjectFilter = 'AND g.subject_id = ?'; params.push(subject_id); }
+
+    if (subject_id) {
+      if (Array.isArray(req.teacherSubjectIds) && !req.teacherSubjectIds.includes(Number(subject_id))) {
+        return res.status(404).json({ success: false, message: 'Subject grades not found.' });
+      }
+      subjectFilter += 'AND g.subject_id = ? ';
+      subjectParams.push(Number(subject_id));
+    }
+
+    if (Array.isArray(req.teacherSubjectIds)) {
+      if (!req.teacherSubjectIds.length) {
+        return res.status(404).json({ success: false, message: 'Class grades not found.' });
+      }
+      subjectFilter += `AND g.subject_id IN (${req.teacherSubjectIds.map(() => '?').join(',')}) `;
+      subjectParams.push(...req.teacherSubjectIds);
+    }
 
     const [rows] = await db.execute(
       `SELECT s.id AS student_id, s.reg_number,
@@ -171,11 +194,11 @@ exports.getClassGrades = async (req, res) => {
               g.cat_score, g.exam_score, g.total_score, g.grade_letter, g.remarks
        FROM students s
        JOIN users u ON s.user_id = u.id
-       LEFT JOIN grades g   ON g.student_id = s.id AND g.term = ? AND g.academic_year = ? ${subjectFilter}
+       LEFT JOIN grades g ON g.student_id = s.id AND g.term = ? AND g.academic_year = ? ${subjectFilter}
        LEFT JOIN subjects sub ON g.subject_id = sub.id
        WHERE s.class_id = ?
        ORDER BY u.full_name, sub.name`,
-      [term, academic_year, ...( subject_id ? [subject_id] : []), req.params.classId]
+      [term, academic_year, ...subjectParams, req.params.classId]
     );
 
     res.json({ success: true, data: rows });
