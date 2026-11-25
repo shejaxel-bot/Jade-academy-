@@ -1,9 +1,10 @@
 const fs = require('fs');
+const path = require('path');
 
 // ── Shared nav/footer/modal snippets ──────────────────────────────
 const topbar = `<div class="topbar">
   <div class="topbar-left">
-    <a href="index.html">☎ (+250) 788-591-503</a>
+    <a href="../index.html">☎ (+250) 788-591-503</a>
     <a href="mailto:info@excelacademy.rw">✉ info@excelacademy.rw</a>
     <a href="#">📧 Staff Email</a>
   </div>
@@ -13,14 +14,14 @@ const topbar = `<div class="topbar">
 </div>`;
 
 const nav = `<nav>
-   <a href="index.html" class="logo">
+   <a href="../index.html" class="logo">
         <div class="logo-icon">
-            <img src="Jaxe logo.png" alt="Jaxe Academy Logo">
+            <img src="../Jaxe logo.png" alt="Jaxe Academy Logo">
         </div>
     <div class="logo-text"><span class="name">Jaxe Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
+    <a href="../index.html">Home</a>
     <div class="dropdown"><span>About Us ▾</span><div class="dropdown-menu">
       <a href="welcome.html">Welcome Messages</a><a href="about.html">Mission &amp; Vision</a>
       <a href="values.html">Goals &amp; Core Values</a><a href="documents.html">Key Documents</a>
@@ -46,8 +47,8 @@ const nav = `<nav>
 const footer = `<footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <a href="index.html" class="logo" style="text-decoration:none;">
-        <div class="logo-icon" style="width:40px;height:40px;"><img src="Jaxe logo.png" alt="Jaxe Academy Logo"></div>
+      <a href="../index.html" class="logo" style="text-decoration:none;">
+        <div class="logo-icon" style="width:40px;height:40px;"><img src="../Jaxe logo.png" alt="Jaxe Academy Logo"></div>
         <div class="logo-text"><span class="name" style="color:white;font-size:1rem;">Jaxe Academy</span><span class="tagline">Uburezi Buzira Inenge</span></div>
       </a>
       <p>Shaping the leaders of tomorrow through quality education, strong values, and excellence across our two campuses in Kigali, Rwanda.</p>
@@ -57,7 +58,7 @@ const footer = `<footer>
         <a class="social-link" href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
       </div>
     </div>
-    <div class="footer-col"><h4>Quick Links</h4><a href="index.html">Home</a><a href="about.html">About Us</a><a href="events.html">Events</a><a href="contact.html">Contact</a></div>
+    <div class="footer-col"><h4>Quick Links</h4><a href="../index.html">Home</a><a href="about.html">About Us</a><a href="events.html">Events</a><a href="contact.html">Contact</a></div>
     <div class="footer-col"><h4>Academics</h4><a href="nursery.html">Nursery</a><a href="primary.html">Primary</a><a href="secondary.html">Secondary</a><a href="cambridge.html">Cambridge</a><a href="calendar.html">Calendar</a></div>
     <div class="footer-col"><h4>Portals</h4><a href="#" onclick="openModal('student');return false;">Student Login</a><a href="#" onclick="openModal('parent');return false;">Parent Login</a><a href="#" onclick="openModal('teacher');return false;">Staff Login</a><a href="library.html">Library</a></div>
   </div>
@@ -194,7 +195,7 @@ ${modal}
 function page(title, breadcrumb, heroTitle, heroSub, content) {
   return head(title) + `
 <div class="page-hero">
-  <div class="breadcrumb"><a href="index.html">Home</a> / ${breadcrumb}</div>
+  <div class="breadcrumb"><a href="../index.html">Home</a> / ${breadcrumb}</div>
   <h1>${heroTitle}</h1>
   <p>${heroSub}</p>
 </div>
@@ -556,8 +557,11 @@ const pages = {
   'calendar.html': calendar, 'library.html': library,
 };
 
+const outputDir = path.join(__dirname, 'pages');
+fs.mkdirSync(outputDir, { recursive: true });
+
 Object.entries(pages).forEach(([filename, content]) => {
-  fs.writeFileSync(`/home/claude/school-pages/${filename}`, content);
+  fs.writeFileSync(path.join(outputDir, filename), content);
   console.log(`✅ Built: ${filename}`);
 });
 console.log('\nAll pages built successfully!');
